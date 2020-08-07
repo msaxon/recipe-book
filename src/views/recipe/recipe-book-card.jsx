@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, Image } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import Origin from '../../models/origin';
 import { isUrl } from '../../utils/string-utils';
 
 export default function RecipeBookCard({ recipe }) {
