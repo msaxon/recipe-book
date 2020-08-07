@@ -1,0 +1,24 @@
+@import '../../../App';
+
+footer {
+    margin: 0;
+    background-color: $dark-background;
+    flex-shrink: 0;
+
+    .footer-menu {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        a {
+            color: $sub-heading-text;
+            text-decoration: none;
+            padding: 1em;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    }
+}

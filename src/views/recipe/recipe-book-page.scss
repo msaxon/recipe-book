@@ -1,0 +1,12 @@
+.recipe-card-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.ui.card,
+.ui.card:first-child,
+.ui.card:last-child {
+    margin: 1em;
+}

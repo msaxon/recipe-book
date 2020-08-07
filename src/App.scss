@@ -1,0 +1,70 @@
+// COLORS
+$purple: #615b7f;
+$dark-green: #63b995;
+$light-green: #b6eea6;
+$lavender: #dadff7;
+
+//light mode
+$dark-background: $purple;
+$heading-text: $light-green;
+$content-background: $dark-green;
+$sub-heading-text: $lavender;
+$body-background: $lavender;
+$paragraph-text: black;
+
+//dark mode
+// $dark-background: $purple;
+// $heading-text: $light-green;
+// $content-background: $light-green;
+// $sub-heading-text: $lavender;
+// $body-background: black;
+
+#root {
+    min-height: 100%;
+}
+
+.app {
+    margin: 0;
+    background-color: $body-background;
+    text-align: center;
+    // min-height: 100%;
+    flex: 1 0 auto;
+}
+
+.app-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+p {
+    color: $paragraph-text;
+}
+
+h3 {
+    color: $purple;
+    border-bottom: solid thin $purple;
+}
+
+::selection {
+    background: #090112;
+    /* WebKit/Blink Browsers */
+    color: $lavender;
+}
+
+::-moz-selection {
+    background: #090112;
+    /* Gecko Browsers */
+    color: $lavender;
+}

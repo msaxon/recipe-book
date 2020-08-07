@@ -1,0 +1,37 @@
+@import '../../../App';
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.5em;
+    margin: 0;
+    background-color: $dark-background;
+    color: $heading-text;
+
+    .header-title {
+        text-align: left;
+
+        h1 {
+            font-family: Candara, Calibri, Segoe, Segoe UI, Optima, Arial, sans-serif;
+            font-size: 32px;
+        }
+    }
+
+    .header-menu {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-right: 1em;
+        a {
+            color: $sub-heading-text;
+            text-decoration: none;
+            padding: 1em;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    }
+}
