@@ -157,6 +157,20 @@ export const putNewRecipe = async (recipe, userId, accessToken) => {
     return { error: false, recipeId: recipe.recipeId };
 };
 
+export const updateOldRecipe = async (recipe, userId, accessToken) => {
+    const storedRecipe = await getSingleRecipe(recipe.recipeId, accessToken);
+    if (storedRecipe.origin.ownerId === userId) {
+        let error = await postRecipe(recipe, accessToken);
+        if (error.error) {
+            return error;
+        } else {
+            return { error: false, recipeId: recipe.recipeId };
+        }
+    } else {
+        return { error: true, msg: "You don't have own this recipe." };
+    }
+};
+
 /**
  *  i created this recipe | i imported this recipe
  *      1) create the db recipe

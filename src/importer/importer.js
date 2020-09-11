@@ -30,9 +30,7 @@ const lambdaParams = (url) => {
 
 export const importRecipe = async (url, googleAuth) => {
     const lambda = await setupAuth(googleAuth);
-
-    console.log('url', url, googleAuth);
     const response = await lambda.invoke(lambdaParams(url)).promise();
-
-    console.log('done here', JSON.parse(response.Payload));
+    console.log('response.payload', JSON.parse(response.Payload));
+    return JSON.parse(response.Payload).body.recipe;
 };

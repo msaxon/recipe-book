@@ -4,9 +4,10 @@ import { Button, Input } from 'semantic-ui-react';
 import { Fraction } from 'fractional';
 import qs from 'qs';
 import { getSingleRecipe } from '../../importer/persistance';
+import { setImportedRecipe } from '../../state/actions';
 import { convertMarkdownToHtml } from '../../utils/markdown-utils';
 import { minutesToTime } from '../../utils/time-utils';
-import { useStore } from '../../utils/hooks/useStore';
+import { useStore, useDispatch } from '../../utils/hooks/useStore';
 import './recipe-detail.scss';
 
 export default function RecipeDetailPage(props) {
@@ -15,6 +16,7 @@ export default function RecipeDetailPage(props) {
     const [scaleModalInput, setScaleModalInput] = useState('');
     const [recipe, setRecipe] = useState(null);
     const googleAuth = useStore((state) => state.googleAuth);
+    const dispatch = useDispatch();
 
     const recipeId = qs.parse(props.location.search, { ignoreQueryPrefix: true }).recipeId;
 
@@ -71,6 +73,11 @@ export default function RecipeDetailPage(props) {
         setScaleModalInput(formattedInput);
     };
 
+    const editRecipe = () => {
+        dispatch(setImportedRecipe(recipe));
+        props.history.push('/recipes/edit');
+    };
+
     return (
         <div className="recipe-detail-wrapper container">
             <h2>{recipe.recipeName}</h2>
@@ -80,6 +87,9 @@ export default function RecipeDetailPage(props) {
                     {recipe.origin.website}
                 </a>
             </p>
+            <Button color="green" onClick={editRecipe}>
+                Edit
+            </Button>
             <img src={recipe.image} alt="" />
             <div className="recipe-detail-meta row">
                 <div className="col-1-4">

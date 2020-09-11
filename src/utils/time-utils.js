@@ -18,3 +18,11 @@ export const minutesToTime = (timeInMinutes) => {
     }
     return string;
 };
+
+export const minutesToTimeGetHours = (minutes) => {
+    return Math.floor(minutes / 60);
+};
+
+export const minutesToTimeGetMinutes = (minutes) => {
+    return minutes % 60;
+};

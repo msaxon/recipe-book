@@ -3,22 +3,43 @@ import { Button, Form } from 'semantic-ui-react';
 import { useForm, Controller } from 'react-hook-form';
 import { ErrorMessage } from '@hookform/error-message';
 import TimeDurationInput from './time-duration-input';
-import MultiTextInput from './multi-text-input';
+import MultiTextInput from '../shared/input/multi-text-input';
 import Origin from '../../models/origin';
 import { useStore } from '../../utils/hooks/useStore';
-import { putNewRecipe } from '../../importer/persistance';
+import { putNewRecipe, updateOldRecipe } from '../../importer/persistance';
 import Recipe from '../../models/recipe';
+import './create-recipe.scss';
+
+/**
+ * TODO:
+ *
+ * allow edit
+ */
 
 export default function CreateRecipePage(props) {
-    const { handleSubmit, register, errors, control } = useForm();
-    const googleId = useStore((state) => state.googleId);
-    const googleAuth = useStore((state) => state.googleAuth);
+    const { googleId, googleAuth, importedRecipe: recipe } = useStore();
+    const defaultValues = recipe
+        ? {
+              recipeName: recipe.recipeName,
+              authorName: recipe.origin.authorName,
+              url: recipe.origin.url,
+              website: recipe.origin.website,
+              image: recipe.image,
+              tags: recipe.tags,
+              servings: recipe.servings,
+              ingredients: recipe.ingredients,
+              steps: recipe.steps,
+              notes: recipe.notes,
+          }
+        : undefined;
+
+    const { handleSubmit, register, errors, control } = useForm({ defaultValues });
 
     const onSubmit = async (values) => {
         const origin = new Origin(googleId, values.authorName, values.url, values.website);
 
-        const recipe = new Recipe(
-            null,
+        const recipeToPost = new Recipe(
+            recipe.recipeId ? recipe.recipeId : null,
             values.recipeName,
             origin,
             values.ingredients,
@@ -32,9 +53,16 @@ export default function CreateRecipePage(props) {
         );
 
         try {
-            const response = await putNewRecipe(recipe, googleId, googleAuth);
+            let response;
+            if (recipeToPost.recipeId) {
+                response = await updateOldRecipe(recipeToPost, googleId, googleAuth);
+            } else {
+                response = await putNewRecipe(recipeToPost, googleId, googleAuth);
+            }
+
             console.log(response);
             if (response.error) {
+                console.log('there was an error hitting aws');
             } else {
                 props.history.push('/recipes/details?recipeId=' + response.recipeId);
             }
@@ -44,7 +72,7 @@ export default function CreateRecipePage(props) {
     };
 
     return (
-        <div className="container">
+        <div className="container create-recipe-container">
             <h2>Create a New Recipe</h2>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <div className="row">
@@ -108,11 +136,21 @@ export default function CreateRecipePage(props) {
                     </Form.Field>
                     <Form.Field className="col-md-4 col-sm-12">
                         <label>Active Time</label>
-                        <Controller as={TimeDurationInput} name="activeTimeMinutes" control={control} defaultValue="" />
+                        <Controller
+                            as={TimeDurationInput}
+                            name="activeTimeMinutes"
+                            control={control}
+                            minutes={recipe ? recipe.activeTimeMinutes : 0}
+                        />
                     </Form.Field>
                     <Form.Field className="col-md-4 col-sm-12">
                         <label>Total Time</label>
-                        <Controller as={TimeDurationInput} name="totalTimeMinutes" control={control} defaultValue="" />
+                        <Controller
+                            as={TimeDurationInput}
+                            name="totalTimeMinutes"
+                            control={control}
+                            minutes={recipe ? recipe.totalTimeMinutes : 0}
+                        />
                     </Form.Field>
                 </div>
 
@@ -152,7 +190,9 @@ export default function CreateRecipePage(props) {
                     <label>Notes</label>
                     <textarea name="notes" ref={register} />
                 </Form.Field>
-                <Button type="submit">Save Recipe</Button>
+                <Button primary type="submit" className="submit-button">
+                    Save Recipe
+                </Button>
             </Form>
         </div>
     );

@@ -1,5 +1,11 @@
 import React, { useReducer } from 'react';
-import { SET_DARK_MODE, SIGN_IN_GOOGLE_AUTH, SIGN_OUT_GOOGLE_AUTH } from './action-types';
+import {
+    SET_DARK_MODE,
+    SIGN_IN_GOOGLE_AUTH,
+    SIGN_OUT_GOOGLE_AUTH,
+    SET_IMPORTED_RECIPE,
+    REMOVE_IMPORTED_RECIPE,
+} from './action-types';
 
 export const Store = React.createContext();
 
@@ -22,6 +28,10 @@ const reducer = (state, action) => {
             };
         case SIGN_OUT_GOOGLE_AUTH:
             return { ...state, googleAuth: null, googleId: null, isSignedIn: false };
+        case SET_IMPORTED_RECIPE:
+            return { ...state, importedRecipe: action.payload };
+        case REMOVE_IMPORTED_RECIPE:
+            return { ...state, importedRecipe: null };
         default:
             return state;
     }

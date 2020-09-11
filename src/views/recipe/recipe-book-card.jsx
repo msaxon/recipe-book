@@ -6,7 +6,8 @@ import { isUrl } from '../../utils/string-utils';
 export default function RecipeBookCard({ recipe }) {
     const formatTags = () => {
         if (recipe.tags && recipe.tags.length > 0) {
-            return 'Tags: ' + recipe.tags.values.reduce((a, b) => a + ' - ' + b);
+            console.log('recipe.tags', recipe.tags);
+            return 'Tags: ' + recipe.tags.reduce((a, b) => a + ', ' + b);
         } else {
             return 'Tags: none';
         }

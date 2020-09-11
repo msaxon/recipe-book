@@ -6,12 +6,14 @@
     align-items: center;
     flex-direction: column;
 
+
     img {
         width: 100%;
         height: auto;
         max-width: 600px;
         max-height: 600px;
         border-radius: 8px;
+        margin-top: 1em;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
 
@@ -39,6 +41,7 @@
             color: $purple;
             margin: 0;
         }
+
     }
 
     .recipe-ingredients-steps {
@@ -46,8 +49,7 @@
         padding-top: 2em;
 
         div {
-            h3 {
-            }
+            h3 {}
 
             div {
                 width: 100%;

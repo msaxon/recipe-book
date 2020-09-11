@@ -49,6 +49,7 @@ const App = () => {
                     <ProtectedRoute path="/recipes/import" component={ImportPage} />
                     <ProtectedRoute path="/recipes/details" component={RecipeDetailPage} />
                     <ProtectedRoute path="/recipes/create" component={CreateRecipePage} />
+                    <ProtectedRoute path="/recipes/edit" component={CreateRecipePage} />
                     <Route path="/privacy" component={Privacy} />
                     <Route path="/about" component={AboutPage} />
                 </div>
