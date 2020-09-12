@@ -71,13 +71,15 @@ export default function RecipeBook() {
         const taggedRecipes = recipes.filter((recipe) => firstContainsAllOfSecond(recipe.tags, tags));
 
         //search
-        const searchedRecipes = taggedRecipes.filter(
-            (recipe) =>
-                recipe.recipeName.includes(search) ||
-                recipe.notes.includes(search) ||
-                recipe.steps.find((s) => s.contains(search) !== undefined) ||
-                recipe.ingredients.find((s) => s.contains(search))
-        );
+        const searchedRecipes = taggedRecipes.filter((recipe) => {
+            console.log('recipe.steps', recipe.steps);
+            return (
+                (recipe.recipeName && recipe.recipeName.includes(search)) ||
+                (recipe.notes && recipe.notes.includes(search)) ||
+                (recipe.steps && recipe.steps.find((s) => s.contains(search) !== undefined)) ||
+                (recipe.ingredients && recipe.ingredients.find((s) => s.contains(search)))
+            );
+        });
 
         //sort
         const sortFunc = sortOptions.find((s) => s.key === sort);
