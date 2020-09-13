@@ -9,6 +9,7 @@ import './import-page.scss';
 
 export default function (props) {
     const [url, setUrl] = useState('');
+    const [importError, setImportError] = useState(null);
     const googleAuth = useStore(state => state.googleAuth);
     const dispatch = useDispatch();
 
@@ -18,9 +19,15 @@ export default function (props) {
         dispatch(enableLoader());
         const recipe = await importRecipe(url, googleAuth);
         dispatch(disableLoader());
-        dispatch(setImportedRecipe(recipe));
-        props.history.push('/recipes/create');
+        if (recipe.error) {
+            setImportError(recipe.error.msg);
+        } else {
+            dispatch(setImportedRecipe(recipe));
+            props.history.push('/recipes/create');
+        }
     });
+
+    const importErrorContainer = importError ? <p>{importError}</p> : <></>;
 
     return (
         <div className="import-parent">
@@ -31,6 +38,7 @@ export default function (props) {
                 placeholder="https://www.seriouseats.com/recipes/2020/07/lamb-biryani.html"
                 onChange={e => setUrl(e.target.value)}
             />
+            {importErrorContainer}
             <div className="supported-sites">
                 <h2>Supported Sites</h2>
                 <div>

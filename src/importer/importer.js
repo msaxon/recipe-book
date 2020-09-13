@@ -1,11 +1,11 @@
 import AWS from 'aws-sdk';
 
-const setupAuth = async (accessToken) => {
+const setupAuth = async accessToken => {
     AWS.config.update({
-        region: 'us-east-2',
+        region: 'us-east-2'
     });
     let credentials = new AWS.WebIdentityCredentials({
-        RoleArn: 'arn:aws:iam::809097150636:role/recipeBook-user',
+        RoleArn: 'arn:aws:iam::809097150636:role/recipeBook-user'
     });
     credentials.params.WebIdentityToken = accessToken;
 
@@ -17,20 +17,28 @@ const setupAuth = async (accessToken) => {
         }
     });
 
-    return new AWS.Lambda({ credentials: credentials });
+    return new AWS.Lambda({
+        credentials: credentials
+    });
 };
 
-const lambdaParams = (url) => {
+const lambdaParams = url => {
     return {
         FunctionName: 'arn:aws:lambda:us-east-2:809097150636:function:importRecipe',
         InvocationType: 'RequestResponse',
-        Payload: JSON.stringify({ url }),
+        Payload: JSON.stringify({
+            url
+        })
     };
 };
 
 export const importRecipe = async (url, googleAuth) => {
     const lambda = await setupAuth(googleAuth);
-    const response = await lambda.invoke(lambdaParams(url)).promise();
-    console.log('response.payload', JSON.parse(response.Payload));
-    return JSON.parse(response.Payload).body.recipe;
+    try {
+        const response = await lambda.invoke(lambdaParams(url)).promise();
+        console.log('response.payload', JSON.parse(response.Payload));
+        return JSON.parse(response.Payload).body.recipe;
+    } catch (error) {
+        return { error: true, msg: error };
+    }
 };

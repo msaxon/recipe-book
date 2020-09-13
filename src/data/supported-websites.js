@@ -1,1 +1,1 @@
-export const supportedSites = ['AllRecipes'];
+export const supportedSites = ['AllRecipes', 'SeriousEats'];

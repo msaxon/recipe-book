@@ -6,7 +6,6 @@ import { isUrl } from '../../utils/string-utils';
 export default function RecipeBookCard({ recipe }) {
     const formatTags = () => {
         if (recipe.tags && recipe.tags.length > 0) {
-            console.log('recipe.tags', recipe.tags);
             return 'Tags: ' + recipe.tags.reduce((a, b) => a + ', ' + b);
         } else {
             return 'Tags: none';
@@ -17,7 +16,6 @@ export default function RecipeBookCard({ recipe }) {
         if (isUrl(recipe.origin.url)) {
             return <a href={'https://' + new URL(recipe.origin.url).hostname}>{recipe.origin.website}</a>;
         } else {
-            console.log(recipe.origin.url + ' is not a valid URL');
             return <p>{recipe.origin.website}</p>;
         }
     };

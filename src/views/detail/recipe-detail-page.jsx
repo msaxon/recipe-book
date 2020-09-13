@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import { Button, Input } from 'semantic-ui-react';
 import { Fraction } from 'fractional';
 import qs from 'qs';
-import { getSingleRecipe } from '../../importer/persistance';
+import { getSingleRecipe, deleteRecipeRelationship, deleteRecipe } from '../../importer/persistance';
 import { setImportedRecipe } from '../../state/actions';
 import { convertMarkdownToHtml } from '../../utils/markdown-utils';
 import { minutesToTime } from '../../utils/time-utils';
@@ -15,7 +15,8 @@ export default function RecipeDetailPage(props) {
     const [isScaleModalOpen, setIsScaleModalOpen] = useState(false);
     const [scaleModalInput, setScaleModalInput] = useState('');
     const [recipe, setRecipe] = useState(null);
-    const googleAuth = useStore(state => state.googleAuth);
+    const [serviceCallError, setServiceCallError] = useState(false);
+    const { googleAuth, googleId } = useStore();
     const dispatch = useDispatch();
 
     const recipeId = qs.parse(props.location.search, { ignoreQueryPrefix: true }).recipeId;
@@ -78,6 +79,26 @@ export default function RecipeDetailPage(props) {
         props.history.push('/recipes/edit');
     };
 
+    const removeRecipe = async () => {
+        const response = await deleteRecipeRelationship(recipe, googleId, googleAuth);
+        if (response.error) {
+            setServiceCallError(true);
+        } else {
+            props.history.push('/recipes');
+        }
+    };
+
+    const deleteRecipeFunc = async () => {
+        const response = await deleteRecipe(recipe, googleId, googleAuth);
+        if (response.error) {
+            setServiceCallError(true);
+        } else {
+            props.history.push('/recipes');
+        }
+    };
+
+    const errorSection = serviceCallError ? <p>Error Updating Recipe</p> : <></>;
+
     return (
         <div className="recipe-detail-wrapper container">
             <h2>{recipe.recipeName}</h2>
@@ -87,9 +108,18 @@ export default function RecipeDetailPage(props) {
                     {recipe.origin.website}
                 </a>
             </p>
-            <Button color="green" onClick={editRecipe}>
-                Edit
-            </Button>
+            <div>
+                <Button color="green" onClick={editRecipe}>
+                    Edit
+                </Button>
+                <Button color="orange" onClick={removeRecipe}>
+                    Remove From Library
+                </Button>
+                <Button color="red" onClick={deleteRecipeFunc}>
+                    Delete
+                </Button>
+            </div>
+            {errorSection}
             <img src={recipe.image} alt="" />
             <div className="recipe-detail-meta row">
                 <div className="col-1-4">
