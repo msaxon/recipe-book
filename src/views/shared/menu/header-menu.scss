@@ -13,8 +13,12 @@ header {
         text-align: left;
 
         h1 {
-            font-family: Candara, Calibri, Segoe, Segoe UI, Optima, Arial, sans-serif;
-            font-size: 32px;
+            a {
+                font-family: Candara, Calibri, Segoe, Segoe UI, Optima, Arial, sans-serif;
+                font-size: 32px;
+                color: $heading-text;
+            }
+
         }
     }
 
@@ -24,6 +28,7 @@ header {
         justify-content: space-between;
         align-items: center;
         margin-right: 1em;
+
         a {
             color: $sub-heading-text;
             text-decoration: none;

@@ -15,7 +15,7 @@ export default function RecipeDetailPage(props) {
     const [isScaleModalOpen, setIsScaleModalOpen] = useState(false);
     const [scaleModalInput, setScaleModalInput] = useState('');
     const [recipe, setRecipe] = useState(null);
-    const googleAuth = useStore((state) => state.googleAuth);
+    const googleAuth = useStore(state => state.googleAuth);
     const dispatch = useDispatch();
 
     const recipeId = qs.parse(props.location.search, { ignoreQueryPrefix: true }).recipeId;
@@ -41,7 +41,7 @@ export default function RecipeDetailPage(props) {
 
     if (scale !== 1) {
         let recipeIngredientsArr = recipe.ingredients.split('\n');
-        recipeIngredientsArr = recipeIngredientsArr.map((i) => {
+        recipeIngredientsArr = recipeIngredientsArr.map(i => {
             const iArr = i.split(' ');
             if (!isNaN(iArr[0])) {
                 iArr[0] = parseInt(iArr[0]) * scale;
@@ -64,11 +64,11 @@ export default function RecipeDetailPage(props) {
             right: 'auto',
             bottom: 'auto',
             marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-        },
+            transform: 'translate(-50%, -50%)'
+        }
     };
 
-    const formatTextInput = (input) => {
+    const formatTextInput = input => {
         const formattedInput = input.target.value.replace(/[^\d.]/g, '');
         setScaleModalInput(formattedInput);
     };
@@ -96,6 +96,7 @@ export default function RecipeDetailPage(props) {
                     <p>
                         <strong>Servings:</strong>
                     </p>
+                    {/* TODO scale servings too */}
                     <p>{recipe.servings}</p>
                 </div>
                 <p className="slash col-1-8">&sect;</p>

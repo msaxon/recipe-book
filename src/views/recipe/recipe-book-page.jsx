@@ -32,13 +32,13 @@ export default function RecipeBook() {
             key: 'recipeName_asc',
             value: 'recipeName_asc',
             text: 'Recipe Name: Asc',
-            func: (a, b) => a.recipeName.localCompare(b.recipeName),
+            func: (a, b) => a.recipeName.toLowerCase() > b.recipeName.toLowerCase(),
         },
         {
             key: 'recipeName_desc',
             value: 'recipeName_desc',
             text: 'Recipe Name: Desc',
-            func: (a, b) => a.recipeName < b.recipeName,
+            func: (a, b) => a.recipeName.toLowerCase() < b.recipeName.toLowerCase(),
         },
         {
             key: 'activeTimeMinutes_lth',
@@ -72,53 +72,45 @@ export default function RecipeBook() {
 
         //search
         const searchedRecipes = taggedRecipes.filter((recipe) => {
-            console.log('recipe.steps', recipe.steps);
             return (
                 (recipe.recipeName && recipe.recipeName.includes(search)) ||
                 (recipe.notes && recipe.notes.includes(search)) ||
-                (recipe.steps && recipe.steps.find((s) => s.contains(search) !== undefined)) ||
-                (recipe.ingredients && recipe.ingredients.find((s) => s.contains(search)))
+                (recipe.steps && recipe.steps.includes(search)) ||
+                (recipe.ingredients && recipe.ingredients.includes(search))
             );
         });
 
         //sort
         const sortFunc = sortOptions.find((s) => s.key === sort);
-        console.log('sortFunc', sortFunc);
-        const sortedRecipes = searchedRecipes.sort(sortOptions.sortFunc);
-        console.log('sorted', sortedRecipes);
+        const sortedRecipes = searchedRecipes.sort(sortFunc.func);
         return sortedRecipes;
     };
     /**
      * TODO
-     *  sort by (fields)
-     *      name
-     *      website
-     *  filter
-     *      ingredient
-     *      website
-     *      origin things
-     *      total times
-     *  tags
-     *      specific stuff here
-     *  search
-     *      name, steps, ingredients, tags, notes
+
      *  Delete a recipe?
      *  Recipe Pagination
      */
 
     return (
         <div>
-            <div>
-                <Input icon="search" fluid placeholder="Search..." onChange={(e) => setSearch(e.target.value)} />
-                <Dropdown
-                    placeholder="Sort By"
-                    fluid
-                    search
-                    selection
-                    options={sortOptions}
-                    onChange={(e, d) => setSort(d.value)}
-                />
-                <MultiTextInput onChange={setTags} />
+            <div className="row filter-section">
+                <div className="col-12 col-lg-4">
+                    <Input icon="search" fluid placeholder="Search..." onChange={(e) => setSearch(e.target.value)} />
+                </div>
+                <div className="col-12 col-lg-4">
+                    <Dropdown
+                        placeholder="Sort By"
+                        fluid
+                        search
+                        selection
+                        options={sortOptions}
+                        onChange={(e, d) => setSort(d.value)}
+                    />
+                </div>
+                <div className="col-12 col-lg-4">
+                    <MultiTextInput onChange={setTags} />
+                </div>
             </div>
             <div className="recipe-card-wrapper">
                 {sortRecipes(userRecipes).map((recipe) => {

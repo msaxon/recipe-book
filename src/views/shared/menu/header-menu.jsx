@@ -52,7 +52,9 @@ export function HeaderMenu() {
     return (
         <header>
             <div className="header-title">
-                <h1>Recipe Book</h1>
+                <h1>
+                    <Link to="/">Recipe Book</Link>
+                </h1>
             </div>
             {menuItems}
         </header>

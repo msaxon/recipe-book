@@ -4,6 +4,8 @@ import {
     SIGN_OUT_GOOGLE_AUTH,
     SET_IMPORTED_RECIPE,
     REMOVE_IMPORTED_RECIPE,
+    ENABLE_LOADER,
+    DISABLE_LOADER
 } from './action-types';
 
 export const setDarkMode = (darkMode) => {
@@ -16,7 +18,10 @@ export const setDarkMode = (darkMode) => {
 export const signInGoogleAuth = (googleId, googleAuth) => {
     return {
         type: SIGN_IN_GOOGLE_AUTH,
-        payload: { googleAuth, googleId },
+        payload: {
+            googleAuth,
+            googleId
+        },
     };
 };
 
@@ -36,5 +41,17 @@ export const setImportedRecipe = (recipe) => {
 export const removeImportedRecipe = () => {
     return {
         type: REMOVE_IMPORTED_RECIPE,
+    };
+};
+
+export const enableLoader = () => {
+    return {
+        type: ENABLE_LOADER
+    };
+};
+
+export const disableLoader = () => {
+    return {
+        type: DISABLE_LOADER
     };
 };
