@@ -29,17 +29,17 @@ export default function CreateRecipePage(props) {
               servings: recipe.servings,
               ingredients: recipe.ingredients,
               steps: recipe.steps,
-              notes: recipe.notes,
+              notes: recipe.notes
           }
         : undefined;
 
     const { handleSubmit, register, errors, control } = useForm({ defaultValues });
 
-    const onSubmit = async (values) => {
+    const onSubmit = async values => {
         const origin = new Origin(googleId, values.authorName, values.url, values.website);
 
         const recipeToPost = new Recipe(
-            recipe.recipeId ? recipe.recipeId : null,
+            recipe && recipe.recipeId ? recipe.recipeId : null,
             values.recipeName,
             origin,
             values.ingredients,
@@ -81,7 +81,7 @@ export default function CreateRecipePage(props) {
                         <input
                             name="recipeName"
                             ref={register({
-                                required: true,
+                                required: true
                             })}
                         />
                         <ErrorMessage
@@ -123,7 +123,7 @@ export default function CreateRecipePage(props) {
                         <input
                             name="servings"
                             ref={register({
-                                required: true,
+                                required: true
                             })}
                         />
                         <ErrorMessage
@@ -159,7 +159,7 @@ export default function CreateRecipePage(props) {
                     <textarea
                         name="ingredients"
                         ref={register({
-                            required: true,
+                            required: true
                         })}
                     />
                     <ErrorMessage
@@ -175,7 +175,7 @@ export default function CreateRecipePage(props) {
                     <textarea
                         name="steps"
                         ref={register({
-                            required: true,
+                            required: true
                         })}
                     />
                     <ErrorMessage
