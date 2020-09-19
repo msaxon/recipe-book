@@ -1,7 +1,8 @@
 import React from 'react';
-import { Card, Image } from 'semantic-ui-react';
+import { Card } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { isUrl } from '../../utils/string-utils';
+import './recipe-book-page.scss';
 
 export default function RecipeBookCard({ recipe }) {
     const formatTags = () => {
@@ -22,13 +23,12 @@ export default function RecipeBookCard({ recipe }) {
 
     return (
         <Card>
-            <Image src={recipe.image} wrapped ui={false} />
+            <img src={recipe.image} width="100%" height="300" alt="" className="recipe-card-img" />
             <Card.Content>
                 <Card.Header>
                     <Link to={'/recipes/details?recipeId=' + recipe.recipeId}>{recipe.recipeName}</Link>
                 </Card.Header>
                 <Card.Meta>{formatWebsiteLink()}</Card.Meta>
-                <Card.Description>{recipe.notes}</Card.Description>
             </Card.Content>
             <Card.Content extra>
                 <p>{formatTags()}</p>

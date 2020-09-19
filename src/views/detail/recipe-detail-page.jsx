@@ -156,7 +156,11 @@ export default function RecipeDetailPage(props) {
                 </div>
                 <div className="steps col-md-9 col-sm-12">
                     <h3>Steps</h3>
-                    <div dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(recipe.steps) }} />
+                    <ol>
+                        {recipe.steps.split('\n').map(step => (
+                            <li>{step}</li>
+                        ))}
+                    </ol>
                 </div>
             </div>
             <Modal

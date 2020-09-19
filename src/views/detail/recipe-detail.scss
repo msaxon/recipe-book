@@ -8,6 +8,7 @@
 
 
     img {
+        object-fit: cover;
         width: 100%;
         height: auto;
         max-width: 600px;
@@ -49,9 +50,7 @@
         padding-top: 2em;
 
         div {
-            h3 {}
-
-            div {
+            ol {
                 width: 100%;
                 text-align: left;
                 padding-left: 1em;
