@@ -7,7 +7,8 @@ import {
     getSingleRecipe,
     deleteRecipeRelationship,
     deleteRecipe,
-    getAllUserRecipeIds
+    getAllUserRecipeIds,
+    putNewRecipeRelationship
 } from '../../importer/persistance';
 import { setImportedRecipe } from '../../state/actions';
 import { convertMarkdownToHtml } from '../../utils/markdown-utils';
@@ -104,14 +105,26 @@ export default function RecipeDetailPage(props) {
         }
     };
 
+    const addToLibrary = async () => {
+        const response = await putNewRecipeRelationship(googleId, recipe.recipeId, googleAuth);
+        if (response.error) {
+            setServiceCallError(true);
+        } else {
+            window.location.reload();
+        }
+    };
+
     const errorSection = serviceCallError ? <p>Error Updating Recipe</p> : <></>;
 
+    console.log('userRecipeIds', userRecipeIds, recipe.recipeId);
     const libraryButton = userRecipeIds.includes(recipe.recipeId) ? (
         <Button color="orange" onClick={removeRecipe}>
             Remove From Library
         </Button>
     ) : (
-        <Button color="orange">Add To Library</Button>
+        <Button color="orange" onClick={addToLibrary}>
+            Add To Library
+        </Button>
     );
 
     const deleteButton =

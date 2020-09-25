@@ -281,6 +281,27 @@ export const getAllUserRecipeIds = async (userId, accessToken) => {
     }
 }
 
+export const putNewRecipeRelationship = async (userId, recipeId, accessToken) => {
+    //get the user
+    const response = await getRecipeIdsByUser(userId, accessToken);
+    if (response.error) {
+        return response;
+    }
+
+    const ids = response.Items.length > 0 ? response.Items[0].recipeId.SS : response.Items;
+    ids.push(recipeId);
+
+    //post the user
+    const error = await postRecipeUserRelationship(ids, userId, accessToken);
+    if (error.error) {
+        return error;
+    }
+    return {
+        error: false,
+        recipeId: recipeId
+    };
+}
+
 /**
  *  i created this recipe | i imported this recipe
  *      1) create the db recipe
