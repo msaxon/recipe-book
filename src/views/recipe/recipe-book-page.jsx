@@ -12,15 +12,20 @@ export default function RecipeBook() {
     const [tags, setTags] = useState([]);
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState('recipeName_asc');
+    const [errorMsg, setErrorMsg] = useState(null);
 
-    const userId = useStore((state) => state.googleId);
-    const googleAuth = useStore((state) => state.googleAuth);
+    const userId = useStore(state => state.googleId);
+    const googleAuth = useStore(state => state.googleAuth);
 
     useEffect(() => {
         async function getRecipes() {
             if (userId && googleAuth) {
                 const recipes = await getAllUserRecipes(userId, googleAuth);
-                setUserRecipes(recipes);
+                if (recipes.error) {
+                    setErrorMsg(recipes.msg);
+                } else {
+                    setUserRecipes(recipes);
+                }
             }
         }
 
@@ -32,46 +37,46 @@ export default function RecipeBook() {
             key: 'recipeName_asc',
             value: 'recipeName_asc',
             text: 'Recipe Name: Asc',
-            func: (a, b) => a.recipeName.toLowerCase() > b.recipeName.toLowerCase(),
+            func: (a, b) => a.recipeName.toLowerCase() > b.recipeName.toLowerCase()
         },
         {
             key: 'recipeName_desc',
             value: 'recipeName_desc',
             text: 'Recipe Name: Desc',
-            func: (a, b) => a.recipeName.toLowerCase() < b.recipeName.toLowerCase(),
+            func: (a, b) => a.recipeName.toLowerCase() < b.recipeName.toLowerCase()
         },
         {
             key: 'activeTimeMinutes_lth',
             value: 'activeTimeMinutes_lth',
             text: 'Active Time: Low to High',
-            func: (a, b) => a.activeTimeMinutes > b.activeTimeMinutes,
+            func: (a, b) => a.activeTimeMinutes > b.activeTimeMinutes
         },
         {
             key: 'activeTimeMinutes_htl',
             value: 'activeTimeMinutes_htl',
             text: 'Active Time: High to Low',
-            func: (a, b) => a.activeTimeMinutes < b.activeTimeMinutes,
+            func: (a, b) => a.activeTimeMinutes < b.activeTimeMinutes
         },
         {
             key: 'totalTimeMinutes_lth',
             value: 'totalTimeMinutes_lth',
             text: 'Total Time: Low to High',
-            func: (a, b) => a.totalTimeMinutes > b.totalTimeMinutes,
+            func: (a, b) => a.totalTimeMinutes > b.totalTimeMinutes
         },
         {
             key: 'totalTimeMinutes_htl',
             value: 'totalTimeMinutes_htl',
             text: 'Totla Time: High to Low',
-            func: (a, b) => a.totalTimeMinutes < b.totalTimeMinutes,
-        },
+            func: (a, b) => a.totalTimeMinutes < b.totalTimeMinutes
+        }
     ];
 
-    const sortRecipes = (recipes) => {
+    const sortRecipes = recipes => {
         //tags
-        const taggedRecipes = recipes.filter((recipe) => firstContainsAllOfSecond(recipe.tags, tags));
+        const taggedRecipes = recipes.filter(recipe => firstContainsAllOfSecond(recipe.tags, tags));
 
         //search
-        const searchedRecipes = taggedRecipes.filter((recipe) => {
+        const searchedRecipes = taggedRecipes.filter(recipe => {
             return (
                 (recipe.recipeName && recipe.recipeName.includes(search)) ||
                 (recipe.notes && recipe.notes.includes(search)) ||
@@ -81,7 +86,7 @@ export default function RecipeBook() {
         });
 
         //sort
-        const sortFunc = sortOptions.find((s) => s.key === sort);
+        const sortFunc = sortOptions.find(s => s.key === sort);
         const sortedRecipes = searchedRecipes.sort(sortFunc.func);
         return sortedRecipes;
     };
@@ -96,7 +101,7 @@ export default function RecipeBook() {
         <div>
             <div className="row filter-section">
                 <div className="col-12 col-lg-4">
-                    <Input icon="search" fluid placeholder="Search..." onChange={(e) => setSearch(e.target.value)} />
+                    <Input icon="search" fluid placeholder="Search..." onChange={e => setSearch(e.target.value)} />
                 </div>
                 <div className="col-12 col-lg-4">
                     <Dropdown
@@ -112,8 +117,11 @@ export default function RecipeBook() {
                     <MultiTextInput onChange={setTags} />
                 </div>
             </div>
+            <div>
+                <p>{errorMsg}</p>
+            </div>
             <div className="recipe-card-wrapper">
-                {sortRecipes(userRecipes).map((recipe) => {
+                {sortRecipes(userRecipes).map(recipe => {
                     return (
                         <div key={recipe.recipeId}>
                             <RecipeBookCard recipe={recipe} />

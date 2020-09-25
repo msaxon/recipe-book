@@ -1,10 +1,22 @@
-import React from 'react';
-import { Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Route, Redirect } from 'react-router-dom';
 import { useStore } from '../../../utils/hooks/useStore';
-import { Redirect } from 'react-router-dom';
 
 export default function ProtectedRoute({ component: Component, ...rest }) {
-    const googleAuth = useStore((state) => state.googleAuth);
+    const [redirect, setRedirect] = useState(null);
+    const googleAuth = useStore(state => state.googleAuth);
 
-    return <Route {...rest} render={(props) => (googleAuth ? <Component {...props} /> : <Redirect to="/" />)} />;
+    useEffect(() => {
+        if (googleAuth) {
+            setRedirect(false);
+        }
+    }, [googleAuth]);
+
+    if (redirect === false) {
+        return <Route {...rest} render={props => <Component {...props} />} />;
+    } else if (redirect === true) {
+        return <Route {...rest} render={props => <Redirect to="/" />} />;
+    } else {
+        return null;
+    }
 }

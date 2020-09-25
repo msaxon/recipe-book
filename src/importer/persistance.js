@@ -29,8 +29,6 @@ const setupAuth = async (accessToken) => {
 
 /* Service Calls */
 const getRecipeIdsByUser = async (userId, accessToken) => {
-    //TODO im broken
-
     const db = await setupAuth(accessToken);
     const getRecipeIdParams = {
         ExpressionAttributeValues: {
@@ -70,8 +68,16 @@ const getRecipesByIdList = async (idList, accessToken) => {
         },
     };
 
-    const recipeResponse = await db.batchGetItem(getRecipesParams).promise();
-    return recipeResponse;
+    try {
+        const recipeResponse = await db.batchGetItem(getRecipesParams).promise();
+        return recipeResponse;
+    } catch (error) {
+        console.log('an error occured getting the batch items');
+        return {
+            error: true,
+            msg: "Had trouble getting your recipes, please try again later."
+        }
+    }
 };
 
 const getRecipeById = async (recipeId, accessToken) => {
@@ -91,7 +97,6 @@ const getRecipeById = async (recipeId, accessToken) => {
 
 const postRecipe = async (recipe, accessToken) => {
     const db = await setupAuth(accessToken);
-    console.log('db', db);
     const putRecipeParams = {
         TableName: 'recipeBook-recipe',
         Item: recipe.toDatabaseParams(),
@@ -159,13 +164,27 @@ const deleteRecipeActual = async (recipeId, accessToken) => {
 
 export const getAllUserRecipes = async (userId, accessToken) => {
     const recipeIdResponse = await getRecipeIdsByUser(userId, accessToken);
-    if (recipeIdResponse.Items.length === 0) {
+    if (recipeIdResponse.error) {
+        return recipeIdResponse;
+    } else if (recipeIdResponse.Items.length === 0) {
         //no need to call if there are no recipes
-        return [];
+        return {
+            error: true,
+            msg: "You have no recipes yet"
+        };
     }
-    const recipeListResponse = await getRecipesByIdList(recipeIdResponse.Items[0].recipeId.SS, accessToken);
-    const recipeList = recipeListResponse.Responses['recipeBook-recipe'];
-    return recipeList.map((r) => AWS.DynamoDB.Converter.unmarshall(r));
+    try {
+        const recipeListResponse = await getRecipesByIdList(recipeIdResponse.Items[0].recipeId.SS, accessToken);
+        const recipeList = recipeListResponse.Responses['recipeBook-recipe'];
+        return recipeList.map((r) => AWS.DynamoDB.Converter.unmarshall(r));
+    } catch (error) {
+        console.log('there was an error getting your recipes');
+        return {
+            error: true,
+            msg: 'There was an error fetching your recipes, please try again later'
+        }
+    }
+
 };
 
 export const getSingleRecipe = async (recipeId, accessToken) => {
@@ -188,7 +207,6 @@ export const putNewRecipe = async (recipe, userId, accessToken) => {
         return response;
     }
 
-    console.log('response', response.Items);
     const ids = response.Items.length > 0 ? response.Items[0].recipeId.SS : response.Items;
     ids.push(recipe.recipeId);
 
@@ -230,7 +248,6 @@ export const deleteRecipeRelationship = async (recipe, userId, accessToken) => {
         return response;
     }
 
-    console.log('response', response.Items);
     let ids = response.Items.length > 0 ? response.Items[0].recipeId.SS : response.Items;
     ids = ids.filter(id => id !== recipe.recipeId);
 
@@ -252,6 +269,15 @@ export const deleteRecipe = async (recipe, userId, accessToken) => {
     } else {
         //delete actual recipe
         return await deleteRecipeActual(recipe.recipeId, accessToken);
+    }
+}
+
+export const getAllUserRecipeIds = async (userId, accessToken) => {
+    const recipeIdResponse = await getRecipeIdsByUser(userId, accessToken);
+    if (recipeIdResponse.error) {
+        return recipeIdResponse;
+    } else {
+        return recipeIdResponse.Items[0].recipeId.SS;
     }
 }
 

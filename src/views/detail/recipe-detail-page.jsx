@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import { Button, Input } from 'semantic-ui-react';
+import { Button, Input, Popup } from 'semantic-ui-react';
 import { Fraction } from 'fractional';
 import qs from 'qs';
-import { getSingleRecipe, deleteRecipeRelationship, deleteRecipe } from '../../importer/persistance';
+import {
+    getSingleRecipe,
+    deleteRecipeRelationship,
+    deleteRecipe,
+    getAllUserRecipeIds
+} from '../../importer/persistance';
 import { setImportedRecipe } from '../../state/actions';
 import { convertMarkdownToHtml } from '../../utils/markdown-utils';
 import { minutesToTime } from '../../utils/time-utils';
@@ -15,6 +20,7 @@ export default function RecipeDetailPage(props) {
     const [isScaleModalOpen, setIsScaleModalOpen] = useState(false);
     const [scaleModalInput, setScaleModalInput] = useState('');
     const [recipe, setRecipe] = useState(null);
+    const [userRecipeIds, setUserRecipeIds] = useState(null);
     const [serviceCallError, setServiceCallError] = useState(false);
     const { googleAuth, googleId } = useStore();
     const dispatch = useDispatch();
@@ -25,6 +31,7 @@ export default function RecipeDetailPage(props) {
         async function getRecipe(recipeId, googleAuth) {
             //have a failure scenario here
             setRecipe(await getSingleRecipe(recipeId, googleAuth));
+            setUserRecipeIds(await getAllUserRecipeIds(googleId, googleAuth));
         }
 
         if (recipeId && googleAuth) {
@@ -32,9 +39,9 @@ export default function RecipeDetailPage(props) {
         } else {
             console.error('THERE NEEDS TO BE A RECIPE ID AND AUTH');
         }
-    }, [recipeId, googleAuth]);
+    }, [recipeId, googleId, googleAuth]);
 
-    if (recipe === null) {
+    if (recipe === null || userRecipeIds === null) {
         return <div>Loading...</div>;
     }
 
@@ -99,6 +106,35 @@ export default function RecipeDetailPage(props) {
 
     const errorSection = serviceCallError ? <p>Error Updating Recipe</p> : <></>;
 
+    const libraryButton = userRecipeIds.includes(recipe.recipeId) ? (
+        <Button color="orange" onClick={removeRecipe}>
+            Remove From Library
+        </Button>
+    ) : (
+        <Button color="orange">Add To Library</Button>
+    );
+
+    const deleteButton =
+        recipe.origin.ownerId === googleId ? (
+            <Button color="red" onClick={deleteRecipeFunc}>
+                Delete
+            </Button>
+        ) : (
+            <></>
+        );
+
+    const copyToClipboard = () => {
+        const el = document.createElement('textarea');
+        el.value = window.location.href;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    };
+
     return (
         <div className="recipe-detail-wrapper container">
             <h2>{recipe.recipeName}</h2>
@@ -112,12 +148,14 @@ export default function RecipeDetailPage(props) {
                 <Button color="green" onClick={editRecipe}>
                     Edit
                 </Button>
-                <Button color="orange" onClick={removeRecipe}>
-                    Remove From Library
-                </Button>
-                <Button color="red" onClick={deleteRecipeFunc}>
-                    Delete
-                </Button>
+                <Popup
+                    content="URL Copied"
+                    on="click"
+                    pinned
+                    trigger={<Button content="Share" color="yellow" onClick={copyToClipboard} />}
+                />
+                {libraryButton}
+                {deleteButton}
             </div>
             {errorSection}
             <img src={recipe.image} alt="" />
