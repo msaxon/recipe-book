@@ -9,7 +9,8 @@ import {
     REMOVE_IMPORTED_RECIPE,
     ENABLE_LOADER,
     DISABLE_LOADER,
-    SET_RECIPE_VIEW_MODE
+    SET_RECIPE_VIEW_MODE,
+    SET_RECIPE_BOOK_VIEW_MODE
 } from './action-types';
 
 export const Store = React.createContext();
@@ -19,7 +20,8 @@ const initialState = {
     isSignedIn: null,
     googleAuth: null,
     isLoaderActive: false,
-    recipeViewMode: "default"
+    recipeViewMode: "default",
+    recipeBookViewMode: "default"
 };
 
 const reducer = (state, action) => {
@@ -58,9 +60,13 @@ const reducer = (state, action) => {
         case SET_RECIPE_VIEW_MODE:
             return {
                 ...state, recipeViewMode: action.payload
-            }
-            default:
-                return state;
+            };
+        case SET_RECIPE_BOOK_VIEW_MODE:
+            return {
+                ...state, recipeBookViewMode: action.payload
+            };
+        default:
+            return state;
     }
 };
 

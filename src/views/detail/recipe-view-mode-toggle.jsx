@@ -12,7 +12,7 @@ export default function RecipeViewModeToggle() {
     };
 
     return (
-        <div className="toggle">
+        <div className="recipe-view-toggle">
             <Checkbox toggle onChange={onChange} checked={recipeViewMode === 'index'} />
         </div>
     );

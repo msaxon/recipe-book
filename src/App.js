@@ -19,7 +19,6 @@ import {
     Privacy
 } from './views/privacy/privacy';
 import Footer from './views/shared/footer/footer';
-import RecipeBook from './views/recipe/recipe-book-page';
 import ImportPage from './views/import/import-page';
 import AboutPage from './views/about/about-page';
 import CreateRecipePage from './views/create/create-recipe-page';
@@ -35,6 +34,7 @@ import {
 import './App.scss';
 import AsyncLoader from './views/shared/interstitial/async-loader';
 import RecipeDetailPageContainer from './views/detail/recipe-detail-page-container';
+import RecipeBookContainer from './views/recipe/recipe-book-container';
 
 const App = () => {
     const isLoaderActive = useStore(state => state.isLoaderActive);
@@ -69,7 +69,7 @@ const App = () => {
         /> <
         ProtectedRoute path = "/recipes"
         exact component = {
-            RecipeBook
+            RecipeBookContainer
         }
         /> <
         ProtectedRoute path = "/recipes/import"
