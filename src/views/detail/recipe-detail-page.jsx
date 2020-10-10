@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { Button, Input, Popup } from 'semantic-ui-react';
 import { Fraction } from 'fractional';
+import RecipeViewModeToggle from './recipe-view-mode-toggle';
 import { deleteRecipeRelationship, deleteRecipe, putNewRecipeRelationship } from '../../importer/persistance';
 
 import { setImportedRecipe } from '../../state/actions';
