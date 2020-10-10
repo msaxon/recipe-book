@@ -35,6 +35,8 @@ import {
 
 import './App.scss';
 import AsyncLoader from './views/shared/interstitial/async-loader';
+import RecipeDetailIndexCard from './views/detail/recipe-detail-index-card';
+import RecipeDetailPageContainer from './views/detail/recipe-detail-page-container';
 
 const App = () => {
     const isLoaderActive = useStore(state => state.isLoaderActive);
@@ -79,7 +81,7 @@ const App = () => {
         /> <
         ProtectedRoute path = "/recipes/details"
         component = {
-            RecipeDetailPage
+            RecipeDetailPageContainer
         }
         /> <
         ProtectedRoute path = "/recipes/create"
@@ -101,8 +103,8 @@ const App = () => {
         component = {
             AboutPage
         }
-        /> <
-        /div>
+        /> < /
+        div >
     );
 
     if (isLoaderActive) {
@@ -112,8 +114,8 @@ const App = () => {
             AsyncLoader size = {
                 50
             }
-            /> <
-            /div>
+            /> < /
+            div >
         );
     }
 
@@ -127,8 +129,8 @@ const App = () => {
         } <
         Footer / >
         <
-        /div> <
-        /HashRouter>
+        /div> < /
+        HashRouter >
     );
 };
 

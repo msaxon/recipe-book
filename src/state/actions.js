@@ -5,7 +5,8 @@ import {
     SET_IMPORTED_RECIPE,
     REMOVE_IMPORTED_RECIPE,
     ENABLE_LOADER,
-    DISABLE_LOADER
+    DISABLE_LOADER,
+    SET_RECIPE_VIEW_MODE
 } from './action-types';
 
 export const setDarkMode = (darkMode) => {
@@ -53,5 +54,12 @@ export const enableLoader = () => {
 export const disableLoader = () => {
     return {
         type: DISABLE_LOADER
+    };
+};
+
+export const setRecipeViewMode = (mode) => {
+    return {
+        type: SET_RECIPE_VIEW_MODE,
+        payload: mode
     };
 };

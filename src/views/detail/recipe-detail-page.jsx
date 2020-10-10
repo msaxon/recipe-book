@@ -10,6 +10,7 @@ import {
     getAllUserRecipeIds,
     putNewRecipeRelationship
 } from '../../importer/persistance';
+import RecipeViewModeToggle from './recipe-view-mode-toggle';
 import { setImportedRecipe } from '../../state/actions';
 import { convertMarkdownToHtml } from '../../utils/markdown-utils';
 import { minutesToTime } from '../../utils/time-utils';
@@ -20,36 +21,15 @@ export default function RecipeDetailPage(props) {
     const [scale, setScale] = useState(1);
     const [isScaleModalOpen, setIsScaleModalOpen] = useState(false);
     const [scaleModalInput, setScaleModalInput] = useState('');
-    const [recipe, setRecipe] = useState(null);
     const [userRecipeIds, setUserRecipeIds] = useState(null);
     const [serviceCallError, setServiceCallError] = useState(false);
     const { googleAuth, googleId } = useStore();
     const dispatch = useDispatch();
 
-    const recipeId = qs.parse(props.location.search, { ignoreQueryPrefix: true }).recipeId;
-
-    useEffect(() => {
-        async function getRecipe(recipeId, googleAuth) {
-            //have a failure scenario here
-            setRecipe(await getSingleRecipe(recipeId, googleAuth));
-            setUserRecipeIds(await getAllUserRecipeIds(googleId, googleAuth));
-        }
-
-        if (recipeId && googleAuth) {
-            getRecipe(recipeId, googleAuth);
-        } else {
-            console.error('THERE NEEDS TO BE A RECIPE ID AND AUTH');
-        }
-    }, [recipeId, googleId, googleAuth]);
-
-    if (recipe === null || userRecipeIds === null) {
-        return <div>Loading...</div>;
-    }
-
-    let recipeIngredients = recipe.ingredients;
+    let recipeIngredients = props.recipe.ingredients;
 
     if (scale !== 1) {
-        let recipeIngredientsArr = recipe.ingredients.split('\n');
+        let recipeIngredientsArr = props.recipe.ingredients.split('\n');
         recipeIngredientsArr = recipeIngredientsArr.map(i => {
             const iArr = i.split(' ');
             if (!isNaN(iArr[0])) {
@@ -83,12 +63,12 @@ export default function RecipeDetailPage(props) {
     };
 
     const editRecipe = () => {
-        dispatch(setImportedRecipe(recipe));
+        dispatch(setImportedRecipe(props.recipe));
         props.history.push('/recipes/edit');
     };
 
     const removeRecipe = async () => {
-        const response = await deleteRecipeRelationship(recipe, googleId, googleAuth);
+        const response = await deleteRecipeRelationship(props.recipe, googleId, googleAuth);
         if (response.error) {
             setServiceCallError(true);
         } else {
@@ -97,7 +77,7 @@ export default function RecipeDetailPage(props) {
     };
 
     const deleteRecipeFunc = async () => {
-        const response = await deleteRecipe(recipe, googleId, googleAuth);
+        const response = await deleteRecipe(props.recipe, googleId, googleAuth);
         if (response.error) {
             setServiceCallError(true);
         } else {
@@ -106,7 +86,7 @@ export default function RecipeDetailPage(props) {
     };
 
     const addToLibrary = async () => {
-        const response = await putNewRecipeRelationship(googleId, recipe.recipeId, googleAuth);
+        const response = await putNewRecipeRelationship(googleId, props.recipe.recipeId, googleAuth);
         if (response.error) {
             setServiceCallError(true);
         } else {
@@ -116,8 +96,7 @@ export default function RecipeDetailPage(props) {
 
     const errorSection = serviceCallError ? <p>Error Updating Recipe</p> : <></>;
 
-    console.log('userRecipeIds', userRecipeIds, recipe.recipeId);
-    const libraryButton = userRecipeIds.includes(recipe.recipeId) ? (
+    const libraryButton = props.userRecipeIds.includes(props.recipe.recipeId) ? (
         <Button color="orange" onClick={removeRecipe}>
             Remove From Library
         </Button>
@@ -128,7 +107,7 @@ export default function RecipeDetailPage(props) {
     );
 
     const deleteButton =
-        recipe.origin.ownerId === googleId ? (
+        props.recipe.origin.ownerId === googleId ? (
             <Button color="red" onClick={deleteRecipeFunc}>
                 Delete
             </Button>
@@ -150,11 +129,12 @@ export default function RecipeDetailPage(props) {
 
     return (
         <div className="recipe-detail-wrapper container">
-            <h2>{recipe.recipeName}</h2>
+            <RecipeViewModeToggle />
+            <h2>{props.recipe.recipeName}</h2>
             <p>
-                Author: {recipe.origin.authorName} /{' '}
-                <a target="_blank" rel="noopener noreferrer" href={recipe.origin.url}>
-                    {recipe.origin.website}
+                Author: {props.recipe.origin.authorName} /{' '}
+                <a target="_blank" rel="noopener noreferrer" href={props.recipe.origin.url}>
+                    {props.recipe.origin.website}
                 </a>
             </p>
             <div>
@@ -171,28 +151,28 @@ export default function RecipeDetailPage(props) {
                 {deleteButton}
             </div>
             {errorSection}
-            <img src={recipe.image} alt="" />
+            <img src={props.recipe.image} alt="" />
             <div className="recipe-detail-meta row">
                 <div className="col-1-4">
                     <p>
                         <strong>Servings:</strong>
                     </p>
                     {/* TODO scale servings too */}
-                    <p>{recipe.servings}</p>
+                    <p>{props.recipe.servings}</p>
                 </div>
                 <p className="slash col-1-8">&sect;</p>
                 <div className="col-1-4">
                     <p>
                         <strong>Active Time:</strong>
                     </p>
-                    <p>{minutesToTime(recipe.activeTimeMinutes)}</p>
+                    <p>{minutesToTime(props.recipe.activeTimeMinutes)}</p>
                 </div>
                 <p className="slash col-1-8">&sect;</p>
                 <div className="col-1-4">
                     <p>
                         <strong>Total Time:</strong>
                     </p>
-                    <p>{minutesToTime(recipe.totalTimeMinutes)}</p>
+                    <p>{minutesToTime(props.recipe.totalTimeMinutes)}</p>
                 </div>
             </div>
             <div className="recipe-ingredients-steps row">
@@ -208,7 +188,7 @@ export default function RecipeDetailPage(props) {
                 <div className="steps col-md-9 col-sm-12">
                     <h3>Steps</h3>
                     <ol>
-                        {recipe.steps.split('\n').map(step => (
+                        {props.recipe.steps.split('\n').map(step => (
                             <li>{step}</li>
                         ))}
                     </ol>

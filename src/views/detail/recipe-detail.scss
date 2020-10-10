@@ -71,3 +71,59 @@
 .scale-buttons {
     margin: 1em 0;
 }
+
+.index-card {
+    background-color: white;
+    margin: 1em;
+    min-height: 300px;
+    font-family: 'Indie Flower', serif;
+    font-weight: bolder;
+
+    h2 {
+        font-size: 30px;
+        padding-top: .5 em;
+        margin-bottom: 0;
+        font-family: 'Indie Flower', serif;
+    }
+
+    .red-line {
+        min-width: 100%;
+        height: 3px;
+        border-top: solid #fe7456 2px;
+    }
+
+    .general-text {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        height: 100%;
+        font-size: 17px;
+
+        background: repeating-linear-gradient(#FFFFFF 0px, #FFFFFF 20px, #00978d 0px, #f3b6c9 21px) no-repeat 50% 50% / 100% 100%;
+
+        .steps {
+            max-width: 67%;
+        }
+
+        .items {
+            max-width: 27%;
+        }
+
+        div {
+            p {
+                line-height: 21px;
+                text-align: left;
+                margin-left: 1em;
+                margin-bottom: 21px;
+            }
+        }
+
+    }
+}
+
+.toggle {
+    position: absolute;
+    top: 47px;
+    left: 20px;
+}
