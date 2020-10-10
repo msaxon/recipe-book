@@ -4,12 +4,12 @@ import {
 } from 'uuid';
 
 /* Helper Functions */
-const setupAuth = async (accessToken) => {
+const setupAuth = async accessToken => {
     AWS.config.update({
-        region: 'us-east-2',
+        region: 'us-east-2'
     });
     let credentials = new AWS.WebIdentityCredentials({
-        RoleArn: 'arn:aws:iam::809097150636:role/recipeBook-user',
+        RoleArn: 'arn:aws:iam::809097150636:role/recipeBook-user'
     });
     credentials.params.WebIdentityToken = accessToken;
 
@@ -34,11 +34,11 @@ const getRecipeIdsByUser = async (userId, accessToken) => {
         ExpressionAttributeValues: {
             ':id': {
                 S: userId
-            },
+            }
         },
         KeyConditionExpression: 'userId = :id',
         ProjectionExpression: 'userId, recipeId',
-        TableName: 'recipeBook-userRecipePair',
+        TableName: 'recipeBook-userRecipePair'
     };
 
     try {
@@ -57,15 +57,15 @@ const getRecipesByIdList = async (idList, accessToken) => {
     const getRecipesParams = {
         RequestItems: {
             'recipeBook-recipe': {
-                Keys: idList.map((r) => {
+                Keys: idList.map(r => {
                     return {
                         recipeId: {
                             S: r
                         }
                     };
-                }),
-            },
-        },
+                })
+            }
+        }
     };
 
     try {
@@ -75,8 +75,8 @@ const getRecipesByIdList = async (idList, accessToken) => {
         console.log('an error occured getting the batch items');
         return {
             error: true,
-            msg: "Had trouble getting your recipes, please try again later."
-        }
+            msg: 'Had trouble getting your recipes, please try again later.'
+        };
     }
 };
 
@@ -85,10 +85,10 @@ const getRecipeById = async (recipeId, accessToken) => {
     const getRecipeIdParams = {
         Key: {
             recipeId: {
-                S: recipeId,
-            },
+                S: recipeId
+            }
         },
-        TableName: 'recipeBook-recipe',
+        TableName: 'recipeBook-recipe'
     };
 
     const recipeResponse = await db.getItem(getRecipeIdParams).promise();
@@ -99,7 +99,7 @@ const postRecipe = async (recipe, accessToken) => {
     const db = await setupAuth(accessToken);
     const putRecipeParams = {
         TableName: 'recipeBook-recipe',
-        Item: recipe.toDatabaseParams(),
+        Item: recipe.toDatabaseParams()
     };
 
     try {
@@ -123,8 +123,8 @@ const postRecipeUserRelationship = async (recipeIds, userId, accessToken) => {
             },
             recipeId: {
                 SS: recipeIds
-            },
-        },
+            }
+        }
     };
 
     try {
@@ -147,7 +147,7 @@ const deleteRecipeActual = async (recipeId, accessToken) => {
                 S: recipeId
             }
         }
-    }
+    };
 
     try {
         const response = await db.deleteItem(deleteRecipeParams).promise();
@@ -156,9 +156,9 @@ const deleteRecipeActual = async (recipeId, accessToken) => {
         console.log('error during delete', err);
         return {
             error: true
-        }
+        };
     }
-}
+};
 
 /* Exposed user functions */
 
@@ -170,21 +170,20 @@ export const getAllUserRecipes = async (userId, accessToken) => {
         //no need to call if there are no recipes
         return {
             error: true,
-            msg: "You have no recipes yet"
+            msg: 'You have no recipes yet'
         };
     }
     try {
         const recipeListResponse = await getRecipesByIdList(recipeIdResponse.Items[0].recipeId.SS, accessToken);
         const recipeList = recipeListResponse.Responses['recipeBook-recipe'];
-        return recipeList.map((r) => AWS.DynamoDB.Converter.unmarshall(r));
+        return recipeList.map(r => AWS.DynamoDB.Converter.unmarshall(r));
     } catch (error) {
         console.log('there was an error getting your recipes');
         return {
             error: true,
             msg: 'There was an error fetching your recipes, please try again later'
-        }
+        };
     }
-
 };
 
 export const getSingleRecipe = async (recipeId, accessToken) => {
@@ -260,7 +259,7 @@ export const deleteRecipeRelationship = async (recipe, userId, accessToken) => {
         error: false,
         recipeId: recipe.recipeId
     };
-}
+};
 
 export const deleteRecipe = async (recipe, userId, accessToken) => {
     const response = deleteRecipeRelationship(recipe, userId, accessToken);
@@ -270,16 +269,17 @@ export const deleteRecipe = async (recipe, userId, accessToken) => {
         //delete actual recipe
         return await deleteRecipeActual(recipe.recipeId, accessToken);
     }
-}
+};
 
 export const getAllUserRecipeIds = async (userId, accessToken) => {
     const recipeIdResponse = await getRecipeIdsByUser(userId, accessToken);
     if (recipeIdResponse.error) {
         return recipeIdResponse;
     } else {
-        return recipeIdResponse.Items[0] ? recipeIdResponse.Items[0].recipeId.SS : [];
+        console.log('recipeIdResponse', recipeIdResponse);
+        return recipeIdResponse.Items.length > 0 ? recipeIdResponse.Items[0].recipeId.SS : [];
     }
-}
+};
 
 export const putNewRecipeRelationship = async (userId, recipeId, accessToken) => {
     //get the user
@@ -300,7 +300,7 @@ export const putNewRecipeRelationship = async (userId, recipeId, accessToken) =>
         error: false,
         recipeId: recipeId
     };
-}
+};
 
 /**
  *  i created this recipe | i imported this recipe

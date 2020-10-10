@@ -19,7 +19,7 @@ const initialState = {
     isSignedIn: null,
     googleAuth: null,
     isLoaderActive: false,
-    recipeViewMode: "index"
+    recipeViewMode: "default"
 };
 
 const reducer = (state, action) => {
