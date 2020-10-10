@@ -3,7 +3,7 @@ import qs from 'qs';
 import RecipeDetailPage from './recipe-detail-page';
 import RecipeDetailIndexCard from './recipe-detail-index-card';
 import { getSingleRecipe, getAllUserRecipeIds } from '../../importer/persistance';
-import { useStore, useDispatch } from '../../utils/hooks/useStore';
+import { useStore } from '../../utils/hooks/useStore';
 
 export default function RecipeDetailPageContainer(props) {
     const [recipe, setRecipe] = useState(null);

@@ -277,7 +277,7 @@ export const getAllUserRecipeIds = async (userId, accessToken) => {
     if (recipeIdResponse.error) {
         return recipeIdResponse;
     } else {
-        return recipeIdResponse.Items[0].recipeId.SS;
+        return recipeIdResponse.Items[0] ? recipeIdResponse.Items[0].recipeId.SS : [];
     }
 }
 
