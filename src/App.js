@@ -20,7 +20,6 @@ import {
 } from './views/privacy/privacy';
 import Footer from './views/shared/footer/footer';
 import RecipeBook from './views/recipe/recipe-book-page';
-import RecipeDetailPage from './views/detail/recipe-detail-page';
 import ImportPage from './views/import/import-page';
 import AboutPage from './views/about/about-page';
 import CreateRecipePage from './views/create/create-recipe-page';
@@ -35,7 +34,6 @@ import {
 
 import './App.scss';
 import AsyncLoader from './views/shared/interstitial/async-loader';
-import RecipeDetailIndexCard from './views/detail/recipe-detail-index-card';
 import RecipeDetailPageContainer from './views/detail/recipe-detail-page-container';
 
 const App = () => {

@@ -2,15 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { Button, Input, Popup } from 'semantic-ui-react';
 import { Fraction } from 'fractional';
-import qs from 'qs';
-import {
-    getSingleRecipe,
-    deleteRecipeRelationship,
-    deleteRecipe,
-    getAllUserRecipeIds,
-    putNewRecipeRelationship
-} from '../../importer/persistance';
-import RecipeViewModeToggle from './recipe-view-mode-toggle';
+import { deleteRecipeRelationship, deleteRecipe, putNewRecipeRelationship } from '../../importer/persistance';
+
 import { setImportedRecipe } from '../../state/actions';
 import { convertMarkdownToHtml } from '../../utils/markdown-utils';
 import { minutesToTime } from '../../utils/time-utils';
@@ -21,7 +14,6 @@ export default function RecipeDetailPage(props) {
     const [scale, setScale] = useState(1);
     const [isScaleModalOpen, setIsScaleModalOpen] = useState(false);
     const [scaleModalInput, setScaleModalInput] = useState('');
-    const [userRecipeIds, setUserRecipeIds] = useState(null);
     const [serviceCallError, setServiceCallError] = useState(false);
     const { googleAuth, googleId } = useStore();
     const dispatch = useDispatch();

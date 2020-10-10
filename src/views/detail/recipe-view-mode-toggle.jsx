@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Checkbox } from 'semantic-ui-react';
 import { useStore, useDispatch } from '../../utils/hooks/useStore';
 import { setRecipeViewMode } from '../../state/actions';

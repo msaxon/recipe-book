@@ -8,9 +8,7 @@ import { useStore, useDispatch } from '../../utils/hooks/useStore';
 export default function RecipeDetailPageContainer(props) {
     const [recipe, setRecipe] = useState(null);
     const [userRecipeIds, setUserRecipeIds] = useState(null);
-    const [serviceCallError, setServiceCallError] = useState(false);
     const { googleAuth, googleId, recipeViewMode } = useStore();
-    const dispatch = useDispatch();
     const recipeId = qs.parse(props.location.search, { ignoreQueryPrefix: true }).recipeId;
 
     useEffect(() => {
