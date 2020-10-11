@@ -10,8 +10,9 @@ import { convertMarkdownToHtml } from '../../utils/markdown-utils';
 import { minutesToTime } from '../../utils/time-utils';
 import { useStore, useDispatch } from '../../utils/hooks/useStore';
 import './recipe-detail.scss';
+import { withRouter } from 'react-router-dom';
 
-export default function RecipeDetailPage(props) {
+function RecipeDetailPage(props) {
     const [scale, setScale] = useState(1);
     const [isScaleModalOpen, setIsScaleModalOpen] = useState(false);
     const [scaleModalInput, setScaleModalInput] = useState('');
@@ -261,3 +262,5 @@ export default function RecipeDetailPage(props) {
         </div>
     );
 }
+
+export default withRouter(RecipeDetailPage);
