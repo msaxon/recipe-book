@@ -12,4 +12,14 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    .text-container {
+        display: flex;
+        flex-direction: row;
+
+        .text-area {
+            width: 33%;
+            padding: 1em;
+        }
+    }
 }
