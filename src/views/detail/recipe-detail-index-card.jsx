@@ -20,6 +20,11 @@ export default function RecipeDetailIndexCard({ recipe }) {
                     <div dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(recipe.ingredients) }} />
                 </div>
             </div>
+            <div className="general-text">
+                <div>
+                    <p>Notes: {recipe.notes}</p>
+                </div>
+            </div>
         </div>
     );
 }

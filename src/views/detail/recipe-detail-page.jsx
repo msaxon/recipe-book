@@ -186,6 +186,8 @@ function RecipeDetailPage(props) {
                             <li>{step}</li>
                         ))}
                     </ol>
+                    <h3>Notes</h3>
+                    <p>{props.recipe.notes}</p>
                 </div>
             </div>
             <Modal
