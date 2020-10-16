@@ -3,7 +3,6 @@ import RecipeBookCard from './recipe-book-card';
 import './recipe-book-page.scss';
 
 export default function RecipeBook({ userRecipes }) {
-    console.log('here', userRecipes);
     if (userRecipes === undefined) {
         return <p>...loading</p>;
     }

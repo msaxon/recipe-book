@@ -38,37 +38,37 @@ export default function RecipeBookContainer() {
             key: 'recipeName_asc',
             value: 'recipeName_asc',
             text: 'Recipe Name: Asc',
-            func: (a, b) => a.recipeName.toLowerCase() > b.recipeName.toLowerCase()
+            func: (a, b) => a.recipeName.toLowerCase().localeCompare(b.recipeName.toLowerCase())
         },
         {
             key: 'recipeName_desc',
             value: 'recipeName_desc',
             text: 'Recipe Name: Desc',
-            func: (a, b) => a.recipeName.toLowerCase() < b.recipeName.toLowerCase()
+            func: (a, b) => b.recipeName.toLowerCase().localeCompare(a.recipeName.toLowerCase())
         },
         {
             key: 'activeTimeMinutes_lth',
             value: 'activeTimeMinutes_lth',
             text: 'Active Time: Low to High',
-            func: (a, b) => a.activeTimeMinutes > b.activeTimeMinutes
+            func: (a, b) => a.activeTimeMinutes - b.activeTimeMinutes
         },
         {
             key: 'activeTimeMinutes_htl',
             value: 'activeTimeMinutes_htl',
             text: 'Active Time: High to Low',
-            func: (a, b) => a.activeTimeMinutes < b.activeTimeMinutes
+            func: (a, b) => b.activeTimeMinutes - a.activeTimeMinutes
         },
         {
             key: 'totalTimeMinutes_lth',
             value: 'totalTimeMinutes_lth',
             text: 'Total Time: Low to High',
-            func: (a, b) => a.totalTimeMinutes > b.totalTimeMinutes
+            func: (a, b) => a.totalTimeMinutes - b.totalTimeMinutes
         },
         {
             key: 'totalTimeMinutes_htl',
             value: 'totalTimeMinutes_htl',
             text: 'Totla Time: High to Low',
-            func: (a, b) => a.totalTimeMinutes < b.totalTimeMinutes
+            func: (a, b) => b.totalTimeMinutes - a.totalTimeMinutes
         }
     ];
 
@@ -88,6 +88,7 @@ export default function RecipeBookContainer() {
 
         //sort
         const sortFunc = sortOptions.find(s => s.key === sort);
+        console.log('sort func', sortFunc);
         const sortedRecipes = searchedRecipes.sort(sortFunc.func);
         return sortedRecipes;
     };

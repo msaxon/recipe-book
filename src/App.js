@@ -43,7 +43,9 @@ const App = () => {
     useEffect(() => {
         const params = {
             clientId: '238655587100-654a8ufkm69v4m667g23ftfu9ec0shc9.apps.googleusercontent.com',
-            scope: 'profile email'
+            scope: 'profile email',
+            ux_mode: 'redirect',
+            redirect_uri: 'http://localhost:3000'
         };
 
         gapi.load('client:auth2', () => {
@@ -52,6 +54,7 @@ const App = () => {
                 .then(() => {
                     const googleUser = gapi.auth2.getAuthInstance().currentUser.get();
                     dispatch(signInGoogleAuth(googleUser.getId(), googleUser.getAuthResponse(true).id_token));
+                    //refresh, but not here
                 })
                 .catch(e => {
                     console.log('error: user is not logged in');
