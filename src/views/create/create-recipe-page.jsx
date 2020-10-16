@@ -5,7 +5,8 @@ import { ErrorMessage } from '@hookform/error-message';
 import TimeDurationInput from './time-duration-input';
 import MultiTextInput from '../shared/input/multi-text-input';
 import Origin from '../../models/origin';
-import { useStore } from '../../utils/hooks/useStore';
+import { useStore, useDispatch } from '../../utils/hooks/useStore';
+import { setImportedRecipe } from '../../state/actions';
 import { putNewRecipe, updateOldRecipe } from '../../importer/persistance';
 import Recipe from '../../models/recipe';
 import './create-recipe.scss';
@@ -32,6 +33,8 @@ export default function CreateRecipePage(props) {
               notes: recipe.notes
           }
         : undefined;
+
+    const dispatch = useDispatch();
 
     const { handleSubmit, register, errors, control } = useForm({ defaultValues });
 
@@ -64,6 +67,7 @@ export default function CreateRecipePage(props) {
             if (response.error) {
                 console.log('there was an error hitting aws');
             } else {
+                dispatch(setImportedRecipe(null));
                 props.history.push('/recipes/details?recipeId=' + response.recipeId);
             }
         } catch (err) {
