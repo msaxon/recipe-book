@@ -34,6 +34,7 @@ export default function RecipeBookContainer() {
         }
 
         getRecipes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [googleAuth, userId]);
 
     const sortOptions = [
