@@ -7,7 +7,9 @@ import {
     ENABLE_LOADER,
     DISABLE_LOADER,
     SET_RECIPE_VIEW_MODE,
-    SET_RECIPE_BOOK_VIEW_MODE
+    SET_RECIPE_BOOK_VIEW_MODE,
+    SET_RECIPES,
+    SET_USER_RECIPE_IDS
 } from './action-types';
 
 export const setDarkMode = (darkMode) => {
@@ -69,5 +71,19 @@ export const setRecipeBookViewMode = (mode) => {
     return {
         type: SET_RECIPE_BOOK_VIEW_MODE,
         payload: mode
+    };
+};
+
+export const setRecipes = (recipes) => {
+    return {
+        type: SET_RECIPES,
+        payload: recipes
+    };
+};
+
+export const setUserRecipeIds = (recipeIds) => {
+    return {
+        type: SET_USER_RECIPE_IDS,
+        payload: recipeIds
     };
 };

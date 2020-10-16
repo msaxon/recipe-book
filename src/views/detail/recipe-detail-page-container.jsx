@@ -3,25 +3,36 @@ import qs from 'qs';
 import RecipeDetailPage from './recipe-detail-page';
 import RecipeDetailIndexCard from './recipe-detail-index-card';
 import { getSingleRecipe, getAllUserRecipeIds } from '../../importer/persistance';
-import { useStore } from '../../utils/hooks/useStore';
+import { useStore, useDispatch } from '../../utils/hooks/useStore';
+import { setUserRecipeIds } from '../../state/actions';
 
 export default function RecipeDetailPageContainer(props) {
     const [recipe, setRecipe] = useState(null);
-    const [userRecipeIds, setUserRecipeIds] = useState(null);
-    const { googleAuth, googleId, recipeViewMode } = useStore();
+    const { googleAuth, googleId, recipeViewMode, recipes, userRecipeIds } = useStore();
     const recipeId = qs.parse(props.location.search, { ignoreQueryPrefix: true }).recipeId;
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         async function getRecipe(recipeId, googleAuth) {
-            //have a failure scenario here
             setRecipe(await getSingleRecipe(recipeId, googleAuth));
-            setUserRecipeIds(await getAllUserRecipeIds(googleId, googleAuth));
         }
 
-        if (recipeId && googleAuth) {
+        async function getUserRecipeIds() {
+            dispatch(setUserRecipeIds(await getAllUserRecipeIds(googleId, googleAuth)));
+        }
+
+        const recipeInState = recipes && recipes.filter(r => r.recipeId === recipeId)[0];
+        if(recipeInState !== null) {
+            setRecipe(recipeInState);
+        } else if (recipeId && googleAuth) {
             getRecipe(recipeId, googleAuth);
         } else {
             console.error('THERE NEEDS TO BE A RECIPE ID AND AUTH');
+        }
+
+        if(userRecipeIds == null) {
+            getUserRecipeIds();
         }
     }, [recipeId, googleId, googleAuth]);
 

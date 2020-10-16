@@ -3,29 +3,32 @@ import { Dropdown, Input } from 'semantic-ui-react';
 import MultiTextInput from '../shared/input/multi-text-input';
 import RecipeBookViewModeToggle from './recipe-book-toggle';
 import RecipeBookPage from './recipe-book-page';
-import { useStore } from '../../utils/hooks/useStore';
+import { useStore, useDispatch } from '../../utils/hooks/useStore';
 import { getAllUserRecipes } from '../../importer/persistance';
 import { firstContainsAllOfSecond } from '../../utils/array-utils';
 import './recipe-book-page.scss';
 import RecipeBookMinimal from './recipe-book-minimal';
+import { setRecipes } from '../../state/actions';
 
 export default function RecipeBookContainer() {
-    const [userRecipes, setUserRecipes] = useState([]);
+    // const [userRecipes, setUserRecipes] = useState([]);
     const [tags, setTags] = useState([]);
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState('recipeName_asc');
     const [errorMsg, setErrorMsg] = useState(null);
     const userId = useStore(state => state.googleId);
-    const { googleAuth, recipeBookViewMode } = useStore();
+    const { googleAuth, recipeBookViewMode, recipes: userRecipes } = useStore();
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         async function getRecipes() {
-            if (userId && googleAuth) {
+            if (userId && googleAuth && userRecipes === null) {
                 const recipes = await getAllUserRecipes(userId, googleAuth);
                 if (recipes.error) {
                     setErrorMsg(recipes.msg);
                 } else {
-                    setUserRecipes(recipes);
+                    dispatch(setRecipes(recipes));
                 }
             }
         }
@@ -92,12 +95,10 @@ export default function RecipeBookContainer() {
         const sortedRecipes = searchedRecipes.sort(sortFunc.func);
         return sortedRecipes;
     };
-    /**
-     * TODO
 
-     *  Delete a recipe?
-     *  Recipe Pagination
-     */
+    if(userRecipes === null) {
+        return <></>;
+    }
 
     if (recipeBookViewMode === 'minimal') {
         return (

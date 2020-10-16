@@ -10,7 +10,9 @@ import {
     ENABLE_LOADER,
     DISABLE_LOADER,
     SET_RECIPE_VIEW_MODE,
-    SET_RECIPE_BOOK_VIEW_MODE
+    SET_RECIPE_BOOK_VIEW_MODE,
+    SET_RECIPES,
+    SET_USER_RECIPE_IDS
 } from './action-types';
 
 export const Store = React.createContext();
@@ -21,7 +23,9 @@ const initialState = {
     googleAuth: null,
     isLoaderActive: false,
     recipeViewMode: "default",
-    recipeBookViewMode: "default"
+    recipeBookViewMode: "default",
+    recipes: null,
+    userRecipeIds: null
 };
 
 const reducer = (state, action) => {
@@ -65,6 +69,14 @@ const reducer = (state, action) => {
             return {
                 ...state, recipeBookViewMode: action.payload
             };
+        case SET_RECIPES:
+            return {
+                ...state, recipes: action.payload
+            }
+        case SET_USER_RECIPE_IDS:
+            return {
+                ...state, userRecipeIds: action.payload
+            }
         default:
             return state;
     }
