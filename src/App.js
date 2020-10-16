@@ -41,11 +41,17 @@ const App = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        // TODO figure out the redirect URI and ux_mode
+        // const params = {
+        //     clientId: '238655587100-654a8ufkm69v4m667g23ftfu9ec0shc9.apps.googleusercontent.com',
+        //     scope: 'profile email',
+        //     ux_mode: 'redirect',
+        //     redirect_uri: 'http://localhost:3000'
+        // };
+
         const params = {
             clientId: '238655587100-654a8ufkm69v4m667g23ftfu9ec0shc9.apps.googleusercontent.com',
-            scope: 'profile email',
-            ux_mode: 'redirect',
-            redirect_uri: 'http://localhost:3000'
+            scope: 'profile email'
         };
 
         gapi.load('client:auth2', () => {
