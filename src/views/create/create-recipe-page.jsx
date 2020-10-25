@@ -118,7 +118,13 @@ export default function CreateRecipePage(props) {
                     </Form.Field>
                     <Form.Field className="col-md-4 col-sm-12">
                         <label>Tags</label>
-                        <Controller as={MultiTextInput} name="tags" control={control} defaultValue={[]} />
+                        <Controller 
+                            as={MultiTextInput} 
+                            name="tags" 
+                            control={control} 
+                            defaultValue={[]} 
+                            tags={recipe ? recipe.tags : []}
+                        />
                     </Form.Field>
                 </div>
                 <div className="row">

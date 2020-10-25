@@ -11,3 +11,13 @@ const urlPattern = new RegExp(
 export const isUrl = (url) => {
     return !!urlPattern.test(url);
 };
+
+export const getVisibleText = node => {
+    if( node.nodeType === Node.TEXT_NODE ) return node.textContent;
+    var style = getComputedStyle( node );
+    if( style && style.display === 'none' ) return '';
+    var text = '';
+    for( var i=0; i<node.childNodes.length; i++ ) 
+        text += getVisibleText( node.childNodes[i] );
+    return text;
+}

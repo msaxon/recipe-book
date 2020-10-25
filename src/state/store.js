@@ -1,6 +1,4 @@
-import React, {
-    useReducer
-} from 'react';
+import React, {useReducer} from 'react';
 import {
     SET_DARK_MODE,
     SIGN_IN_GOOGLE_AUTH,
@@ -91,9 +89,5 @@ export function StoreProvider(props) {
     };
 
     // prettier-ignore
-    return <Store.Provider value = {
-        value
-    } > {
-        props.children
-    } < /Store.Provider>;
+    return <Store.Provider value = {value}> {props.children} </Store.Provider>;
 }

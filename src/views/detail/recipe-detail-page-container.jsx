@@ -37,7 +37,7 @@ export default function RecipeDetailPageContainer(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [recipeId, googleId, googleAuth]);
 
-    if (recipe === null || userRecipeIds === null) {
+    if (recipe === null || recipe === undefined || userRecipeIds === null) {
         return <div>Loading...</div>;
     }
 
