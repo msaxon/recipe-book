@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {HashRouter, Route} from 'react-router-dom';
 import {gapi} from 'gapi-script';
 import { Home} from './views/home/home-route';
