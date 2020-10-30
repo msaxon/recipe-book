@@ -13,9 +13,11 @@ import AsyncLoader from './views/shared/interstitial/async-loader';
 import RecipeDetailPageContainer from './views/detail/recipe-detail-page-container';
 import RecipeBookContainer from './views/recipe/recipe-book-container';
 import Contact from './views/contact/contact';
+import CommunityPage from './views/community/community';
 import {useDispatch,useStore} from './utils/hooks/useStore';
 import { signInGoogleAuth} from './state/actions';
 import './App.scss';
+
 
 
 const App = () => {
@@ -25,8 +27,7 @@ const App = () => {
     useEffect(() => {
         const params = {
             clientId: '238655587100-654a8ufkm69v4m667g23ftfu9ec0shc9.apps.googleusercontent.com',
-            scope: 'profile email',
-            ux_mode: 'redirect'
+            scope: 'profile email'
         };
         
         gapi.load('client:auth2', () => {
@@ -41,7 +42,7 @@ const App = () => {
                     console.log('error: user is not logged in');
                 });
         });
-    }, [dispatch]);
+    }, []);
 
 
     let routes = ( 
@@ -52,6 +53,7 @@ const App = () => {
             <ProtectedRoute path = "/recipes/details" component = {RecipeDetailPageContainer}/> 
             <ProtectedRoute path = "/recipes/create" component = {CreateRecipePage}/> 
             <ProtectedRoute path = "/recipes/edit" component = {CreateRecipePage}/> 
+            <ProtectedRoute path = "/recipes/community" component = {CommunityPage} />
             <Route path = "/privacy" component = {Privacy}/> 
             <Route path = "/about" component = { AboutPage} /> 
             <Route path = "/contact" component = {Contact} />

@@ -21,6 +21,7 @@ export function HeaderMenu() {
             <Link to="/recipes">My Recipe Book</Link>
             <Link to="/recipes/import">Import Recipe</Link>
             <Link to="/recipes/create">Create a Recipe</Link>
+            <Link to="/recipes/community">Community Recipes</Link>
         </div>
     );
 
@@ -37,6 +38,9 @@ export function HeaderMenu() {
                         </Dropdown.Item>
                         <Dropdown.Item>
                             <Link to="/recipes/create">Create a Recipe</Link>
+                        </Dropdown.Item>
+                        <Dropdown.Item>
+                            <Link to="/recipes/community">Community Recipes</Link>
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
