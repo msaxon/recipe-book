@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {HashRouter, Route} from 'react-router-dom';
-import {gapi} from 'gapi-script';
 import { Home} from './views/home/home-route';
 import {HeaderMenu} from './views/shared/menu/header-menu';
 import {Privacy} from './views/privacy/privacy';
@@ -14,36 +13,13 @@ import RecipeDetailPageContainer from './views/detail/recipe-detail-page-contain
 import RecipeBookContainer from './views/recipe/recipe-book-container';
 import Contact from './views/contact/contact';
 import CommunityPage from './views/community/community';
-import {useDispatch,useStore} from './utils/hooks/useStore';
-import { signInGoogleAuth} from './state/actions';
+import {useStore} from './utils/hooks/useStore';
 import './App.scss';
 
 
 
 const App = () => {
     const isLoaderActive = useStore(state => state.isLoaderActive);
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        const params = {
-            clientId: '238655587100-654a8ufkm69v4m667g23ftfu9ec0shc9.apps.googleusercontent.com',
-            scope: 'profile email'
-        };
-        
-        gapi.load('client:auth2', () => {
-            window.gapi.auth2
-                .init(params)
-                .then(() => {
-                    const googleUser = gapi.auth2.getAuthInstance().currentUser.get();
-                    dispatch(signInGoogleAuth(googleUser.getId(), googleUser.getAuthResponse(true).id_token));
-                    //refresh, but not here
-                })
-                .catch(e => {
-                    console.log('error: user is not logged in');
-                });
-        });
-    }, []);
-
 
     let routes = ( 
         <div className = "app" >

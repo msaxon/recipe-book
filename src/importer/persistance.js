@@ -95,10 +95,10 @@ const getRecipeById = async (recipeId, accessToken) => {
     return recipeResponse;
 };
 
-const getRecentRecipes = async (accessToken) => {
-    const db = await setupAuth(accessToken);
-    //TODO
-}
+// const getRecentRecipes = async (accessToken) => {
+//     const db = await setupAuth(accessToken);
+//     //TODO
+// }
 
 const postRecipe = async (recipe, accessToken) => {
     const db = await setupAuth(accessToken);

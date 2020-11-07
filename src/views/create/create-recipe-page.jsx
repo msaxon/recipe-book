@@ -63,7 +63,6 @@ export default function CreateRecipePage(props) {
                 response = await putNewRecipe(recipeToPost, googleId, googleAuth);
             }
 
-            console.log(response);
             if (response.error) {
                 console.log('there was an error hitting aws');
             } else {

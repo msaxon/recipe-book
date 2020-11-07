@@ -92,7 +92,6 @@ export default function RecipeBookContainer() {
 
         //sort
         const sortFunc = sortOptions.find(s => s.key === sort);
-        console.log('sort func', sortFunc);
         const sortedRecipes = searchedRecipes.sort(sortFunc.func);
         return sortedRecipes;
     };
