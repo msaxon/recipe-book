@@ -23,7 +23,8 @@ export default function RecipeDetailPageContainer(props) {
         }
 
         const recipeInState = recipes && recipes.filter(r => r.recipeId === recipeId)[0];
-        if(recipeInState !== null) {
+        
+        if(recipeInState !== null && recipeInState !== undefined) {
             setRecipe(recipeInState);
         } else if (recipeId && googleAuth) {
             getRecipe(recipeId, googleAuth);

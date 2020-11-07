@@ -20,12 +20,15 @@ export default function (props) {
         const recipe = await importRecipe(url, googleAuth);
         dispatch(disableLoader());
         if (recipe.error) {
-            setImportError(recipe.error.msg);
+            console.log('setting import error');
+            setImportError(recipe.msg);
         } else {
             dispatch(setImportedRecipe(recipe));
             props.history.push('/recipes/create');
         }
     });
+
+    console.log('importError', importError);
 
     const importErrorContainer = importError ? <p>{importError}</p> : <></>;
 

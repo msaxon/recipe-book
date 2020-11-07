@@ -16,7 +16,7 @@ export default function Community() {
     return (
         <div>
             <h2>Community Recipes</h2>
-            <p>Recipes go here.</p>
+            <p>Coming soon... maybe</p>
         </div>
     );
 }

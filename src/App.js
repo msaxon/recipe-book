@@ -1,5 +1,6 @@
 import React from 'react';
 import {HashRouter, Route} from 'react-router-dom';
+import { useGoogleLogin } from 'react-google-login';
 import { Home} from './views/home/home-route';
 import {HeaderMenu} from './views/shared/menu/header-menu';
 import {Privacy} from './views/privacy/privacy';
@@ -13,12 +14,33 @@ import RecipeDetailPageContainer from './views/detail/recipe-detail-page-contain
 import RecipeBookContainer from './views/recipe/recipe-book-container';
 import Contact from './views/contact/contact';
 import CommunityPage from './views/community/community';
-import {useStore} from './utils/hooks/useStore';
+import {useStore, useDispatch} from './utils/hooks/useStore';
+import { signInGoogleAuth } from './state/actions';
+import { clientId } from './utils/constants';
 import './App.scss';
 
-
-
 const App = () => {
+
+    //TODO, no copy pasta
+    const dispatch = useDispatch();
+    
+    const onSuccess = (res) => {
+        console.log('success!');
+        dispatch(signInGoogleAuth(res.googleId, res.tokenId));
+    }
+
+    const onFailure = (res) => {
+        console.log('user is not logged in');
+    }
+
+    useGoogleLogin({
+        onSuccess,
+        onFailure,
+        clientId,
+        isSignedIn: true,
+        accessType: 'online'
+    });
+
     const isLoaderActive = useStore(state => state.isLoaderActive);
 
     let routes = ( 
