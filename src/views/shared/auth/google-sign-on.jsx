@@ -11,12 +11,11 @@ export function GoogleSignOn() {
     const dispatch = useDispatch();
     
     const onSuccess = (res) => {
-        console.log('onSuccess is called ', res);
         dispatch(signInGoogleAuth(res.googleId, res.tokenId));
     }
 
     const onFailure = (res) => {
-        console.log('onFailure is called ', res);
+        console.log('user is not logged in');
     }
 
     const { signIn } = useGoogleLogin({
