@@ -12,7 +12,8 @@ export default class Recipe {
         totalTimeMinutes,
         image,
         notes,
-        tags
+        tags,
+        creationTimestamp
     ) {
         this.recipeId = recipeId;
         this.recipeName = recipeName;
@@ -25,6 +26,7 @@ export default class Recipe {
         this.image = image;
         this.notes = notes;
         this.tags = tags;
+        this.creationTimestamp = creationTimestamp ? creationTimestamp : (new Date()).getTime();
     }
 
     toDatabaseParams = () => {

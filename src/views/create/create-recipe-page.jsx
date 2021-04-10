@@ -52,7 +52,8 @@ export default function CreateRecipePage(props) {
             values.totalTimeMinutes,
             values.image,
             values.notes,
-            values.tags
+            values.tags,
+            values.creationTimestamp ? values.creationTimestamp : null
         );
 
         try {
