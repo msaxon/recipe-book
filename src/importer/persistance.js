@@ -95,10 +95,10 @@ const getRecipeById = async (recipeId, accessToken) => {
     return recipeResponse;
 };
 
-// const getRecentRecipes = async (accessToken) => {
-//     const db = await setupAuth(accessToken);
-//     //TODO
-// }
+const getRecentRecipes = async (accessToken) => {
+    const db = await setupAuth(accessToken);
+    //TODO figure out how to do this without a secondary index...
+}
 
 const postRecipe = async (recipe, accessToken) => {
     const db = await setupAuth(accessToken);
@@ -195,6 +195,10 @@ export const getSingleRecipe = async (recipeId, accessToken) => {
     const recipeResponse = await getRecipeById(recipeId, accessToken);
     return AWS.DynamoDB.Converter.unmarshall(recipeResponse.Item);
 };
+
+export const getCommunityRecipes = async (userId, accessToken) => {
+    const recipeResponse = await getCommunityRecipes(userId, accessToken);
+}
 
 export const putNewRecipe = async (recipe, userId, accessToken) => {
     recipe.recipeId = uuidv4();
