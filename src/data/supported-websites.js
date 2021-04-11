@@ -1,1 +1,21 @@
-export const supportedSites = ['All Recipes', 'Bon Appetit', 'Food Network', 'Serious Eats'];
+export const supportedSites = [
+    'All Recipes', 
+    'Bon Appetit', 
+    'Food Network', 
+    'Serious Eats', 
+    'Oh Sweet Basil', 
+    'The Recipe Critic', 
+    'Carls Bad Cravings', 
+    'Gimme Some Oven', 
+    'Salt and Lavendar', 
+    'Fine Cooking', 
+    'The Woks of Life', 
+    'Recipe Tin Eats', 
+    'Dessert for Two', 
+    'Handle the Heat', 
+    'Budget Bytes', 
+    'BBC Good Food', 
+    'Healthy Little Foodies', 
+    'Jo Cooks', 
+    'Olivia\'s Cuisine'
+];

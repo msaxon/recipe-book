@@ -47,7 +47,7 @@ export default function (props) {
                 <div>
                     <p>List of websites currently supported* by the importer.</p>
                     <ul>
-                        {supportedSites.map(site => (
+                        {supportedSites.sort().map(site => (
                             <li>{site}</li>
                         ))}
                     </ul>
