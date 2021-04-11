@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dropdown, Input } from 'semantic-ui-react';
+import qs from 'qs';
 import MultiTextInput from '../shared/input/multi-text-input';
 import RecipeBookViewModeToggle from './recipe-book-toggle';
 import RecipeBookPage from './recipe-book-page';
@@ -10,25 +11,30 @@ import './recipe-book-page.scss';
 import RecipeBookMinimal from './recipe-book-minimal';
 import { setRecipes } from '../../state/actions';
 
-export default function RecipeBookContainer() {
+export default function RecipeBookContainer(props) {
     // const [userRecipes, setUserRecipes] = useState([]);
     const [tags, setTags] = useState([]);
     const [search, setSearch] = useState('');
     const [sort, setSort] = useState('recipeName_asc');
     const [errorMsg, setErrorMsg] = useState(null);
-    const userId = useStore(state => state.googleId);
-    const { googleAuth, recipeBookViewMode, recipes: userRecipes } = useStore();
+    let userId = useStore(state => state.googleId);
+    const { googleAuth, recipeBookViewMode, recipes: userRecipes, recipeUserId } = useStore();
 
+    const userIdQs = qs.parse(props.location.search, { ignoreQueryPrefix: true }).userId;
+    if(userIdQs) {
+        userId = userIdQs;
+    }
+    
     const dispatch = useDispatch();
 
     useEffect(() => {
         async function getRecipes() {
-            if (userId && googleAuth && userRecipes === null) {
+            if (userId && googleAuth && (userRecipes === null || userIdQs || recipeUserId !== userId)) {
                 const recipes = await getAllUserRecipes(userId, googleAuth);
                 if (recipes.error) {
                     setErrorMsg(recipes.msg);
                 } else {
-                    dispatch(setRecipes(recipes));
+                    dispatch(setRecipes(recipes, userId));
                 }
             }
         }
@@ -123,6 +129,7 @@ export default function RecipeBookContainer() {
                     <div className="col-12 col-lg-4">
                         <MultiTextInput onChange={setTags} />
                     </div>
+                    {userIdQs ? <p>Viewing Someone Else's Recipes</p> : null}
                 </div>
                 <div>
                     <p>{errorMsg}</p>
@@ -156,6 +163,7 @@ export default function RecipeBookContainer() {
                 </div>
                 <div>
                     <p>{errorMsg}</p>
+                    {userIdQs ? <p>Viewing Someone Else's Recipes</p> : null}
                 </div>
                 <RecipeBookPage userRecipes={sortRecipes(userRecipes)} />
             </div>

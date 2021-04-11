@@ -36,7 +36,6 @@ export default function MultiTextInput(props) {
                 onAddItem={addItemToState}
                 options={options}
                 onChange={(e, d) => {
-                    console.log('d.value', d.value);
                     onChange(d.value);
                     setSelectedTags(d.value);
                 }}

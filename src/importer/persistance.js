@@ -186,6 +186,7 @@ const getUsers = async (accessToken) => {
 /* Exposed user functions */
 
 export const getAllUserRecipes = async (userId, accessToken) => {
+    console.log('userId', userId);
     const recipeIdResponse = await getRecipeIdsByUser(userId, accessToken);
     if (recipeIdResponse.error) {
         return recipeIdResponse;

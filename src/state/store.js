@@ -71,7 +71,7 @@ const reducer = (state, action) => {
             };
         case SET_RECIPES:
             return {
-                ...state, recipes: action.payload
+                ...state, recipes: action.payload.recipes, recipeUserId: action.payload.userId
             }
         case SET_USER_RECIPE_IDS:
             return {

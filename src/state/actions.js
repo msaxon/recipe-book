@@ -76,10 +76,13 @@ export const setRecipeBookViewMode = (mode) => {
     };
 };
 
-export const setRecipes = (recipes) => {
+export const setRecipes = (recipes, userId) => {
     return {
         type: SET_RECIPES,
-        payload: recipes
+        payload: {
+            recipes: recipes,
+            userId: userId
+        }
     };
 };
 
