@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useStore } from '../../../utils/hooks/useStore';
+import { setRedirectUrl } from '../../../state/actions';
+import { useStore, useDispatch } from '../../../utils/hooks/useStore';
+import { GoogleSignOn } from './google-sign-on';
 
 export default function ProtectedRoute({ component: Component, ...rest }) {
     const [redirect, setRedirect] = useState(null);
-    const googleAuth = useStore(state => state.googleAuth);
+    const { redirectUrl, googleAuth } = useStore();
 
-    useEffect(() => {
-        if (googleAuth) {
-            setRedirect(false);
-        }
-    }, [googleAuth]);
+    const dispatch = useDispatch();
 
-    if (redirect === false) {
+    console.log('redirect', redirect);
+    console.log('auth', googleAuth);
+
+    if (googleAuth) {
         return <Route {...rest} render={props => <Component {...props} />} />;
-    } else if (redirect === true) {
-        return <Route {...rest} render={props => <Redirect to="/" />} />;
     } else {
-        return null;
+        if(!redirectUrl) {
+            dispatch(setRedirectUrl(window.location.href));
+        } 
+        
+        return <Route {...rest} render={props => <GoogleSignOn />} />;
     }
 }

@@ -10,7 +10,9 @@ import {
     SET_RECIPE_VIEW_MODE,
     SET_RECIPE_BOOK_VIEW_MODE,
     SET_RECIPES,
-    SET_USER_RECIPE_IDS
+    SET_USER_RECIPE_IDS,
+    SET_REDIRECT_URL,
+    UNSET_REDIRECT_URL
 } from './action-types';
 
 export const Store = React.createContext();
@@ -74,6 +76,14 @@ const reducer = (state, action) => {
         case SET_USER_RECIPE_IDS:
             return {
                 ...state, userRecipeIds: action.payload
+            }
+        case SET_REDIRECT_URL:
+            return {
+                ...state, redirectUrl: action.payload
+            }
+        case UNSET_REDIRECT_URL:
+            return {
+                ...state, redirectUrl: null
             }
         default:
             return state;

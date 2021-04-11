@@ -1,16 +1,16 @@
 import React from 'react';
 import { useGoogleLogin } from 'react-google-login';
 import { Button } from 'semantic-ui-react';
-import { useDispatch } from '../../../utils/hooks/useStore';
+import { useStore, useDispatch } from '../../../utils/hooks/useStore';
 import { signInGoogleAuth} from '../../../state/actions';
 import { clientId } from '../../../utils/constants';
 import './auth.scss';
 
 export function GoogleSignOn() {
+    const { redirectUrl } = useStore();
     const dispatch = useDispatch();
     
     const onSuccess = (res) => {
-        console.log('success!');
         dispatch(signInGoogleAuth(res.googleId, res.tokenId));
     }
 
@@ -23,7 +23,8 @@ export function GoogleSignOn() {
         onFailure,
         clientId,
         isSignedIn: true,
-        accessType: 'online'
+        accessType: 'online',
+        redirectUri: redirectUrl ? redirectUrl : undefined
     });
 
     return (
