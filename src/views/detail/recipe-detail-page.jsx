@@ -109,6 +109,15 @@ function RecipeDetailPage(props) {
             <></>
         );
 
+    const editButton = 
+        props.recipe.origin.ownerId === googleId ? (
+            <Button color="green" onClick={editRecipe}>
+                Edit
+            </Button>
+        ) : (
+            <></>
+        );
+
     const copyToClipboard = () => {
         const el = document.createElement('textarea');
         el.value = window.location.href;
@@ -126,15 +135,13 @@ function RecipeDetailPage(props) {
             <RecipeViewModeToggle />
             <h2>{props.recipe.recipeName}</h2>
             <p>
-                Author: {props.recipe.origin.authorName} /{' '}
+                Author: {props.recipe.origin.authorName} {props.recipe.origin.url && props.recipe.origin.website ? '/ ' : ''}
                 <a target="_blank" rel="noopener noreferrer" href={props.recipe.origin.url}>
                     {props.recipe.origin.website}
                 </a>
             </p>
             <div>
-                <Button color="green" onClick={editRecipe}>
-                    Edit
-                </Button>
+                {editButton}
                 <Popup
                     content="URL Copied"
                     on="click"

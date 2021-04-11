@@ -165,6 +165,24 @@ const deleteRecipeActual = async (recipeId, accessToken) => {
     }
 };
 
+const getUsers = async (accessToken) => {
+    const db = await setupAuth(accessToken);
+    const params = {
+        TableName: 'recipeBook-user',
+        Select: "ALL_ATTRIBUTES"
+    };
+
+    try {
+        const response = await db.scan(params).promise();
+        return response;
+    } catch (e) {
+        console.log('error occured getting user', e);
+        return {
+            error: true
+        };
+    }
+}
+
 /* Exposed user functions */
 
 export const getAllUserRecipes = async (userId, accessToken) => {
@@ -306,6 +324,15 @@ export const putNewRecipeRelationship = async (userId, recipeId, accessToken) =>
         recipeId: recipeId
     };
 };
+
+export const getAllUsers = async (accessToken) => {
+    const response = await getUsers(accessToken);
+    if(response.error) {
+        return response;
+    } else {
+        return response.Items.length > 0 ? response.Items : [];
+    }
+}
 
 /**
  *  i created this recipe | i imported this recipe

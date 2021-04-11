@@ -1,6 +1,9 @@
-import React from 'react';
+import React, {useEffect } from 'react';
+import { useStore } from '../../utils/hooks/useStore';
+import { getAllUsers } from '../../importer/persistance';
 
 export default function Community() {
+    const { googleAuth, googleId } = useStore();
 
     /**
      *  Grab all recipes/some subset of random recipes
@@ -12,6 +15,16 @@ export default function Community() {
      *      Store "community" recipes in state somewhere else
      *      Maybe have to rename
      */
+
+    useEffect(() => {
+        async function getUsers() {
+            const response = await getAllUsers(googleAuth);
+            console.log('response', response);
+        }
+
+        getUsers();
+
+    }, [googleAuth, googleId])
 
     return (
         <div>
