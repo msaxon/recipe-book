@@ -15,7 +15,7 @@ export default function RecipeBookCard({ recipe }) {
 
     const formatWebsiteLink = () => {
         if (isUrl(recipe.origin.url)) {
-            return <a href={'https://' + new URL(recipe.origin.url).hostname}>{recipe.origin.website}</a>;
+            return <a href={'https://' + new URL(recipe.origin.url).hostname}  target="_blank" rel="noopener noreferrer">{recipe.origin.website}</a>;
         } else {
             return <p>{recipe.origin.website}</p>;
         }
@@ -23,7 +23,9 @@ export default function RecipeBookCard({ recipe }) {
 
     return (
         <Card>
-            <img src={recipe.image} width="100%" height="300" alt="" className="recipe-card-img" />
+            <Link to={'/recipes/details?recipeId=' + recipe.recipeId} className="card-image-link">
+                <img src={recipe.image} width="100%" height="300" alt="" className="recipe-card-img" />
+            </Link>
             <Card.Content>
                 <Card.Header>
                     <Link to={'/recipes/details?recipeId=' + recipe.recipeId}>{recipe.recipeName}</Link>
