@@ -89,10 +89,10 @@ export default function RecipeBookContainer(props) {
         //search
         const searchedRecipes = taggedRecipes.filter(recipe => {
             return (
-                (recipe.recipeName && recipe.recipeName.includes(search)) ||
-                (recipe.notes && recipe.notes.includes(search)) ||
-                (recipe.steps && recipe.steps.includes(search)) ||
-                (recipe.ingredients && recipe.ingredients.includes(search))
+                (recipe.recipeName && recipe.recipeName.toLowerCase().includes(search.toLowerCase())) ||
+                (recipe.notes && recipe.notes.toLowerCase().includes(search.toLowerCase())) ||
+                (recipe.steps && recipe.steps.toLowerCase().includes(search.toLowerCase())) ||
+                (recipe.ingredients && recipe.ingredients.toLowerCase().includes(search.toLowerCase()))
             );
         });
 
