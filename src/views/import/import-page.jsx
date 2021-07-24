@@ -28,8 +28,6 @@ export default function (props) {
         }
     });
 
-    console.log('importError', importError);
-
     const importErrorContainer = importError ? <p>{importError}</p> : <></>;
 
     return (

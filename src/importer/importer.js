@@ -36,7 +36,6 @@ export const importRecipe = async (url, googleAuth) => {
     const lambda = await setupAuth(googleAuth);
     try {
         const response = await lambda.invoke(lambdaParams(url)).promise();
-        console.log('response.payload', JSON.parse(response.Payload));
         return JSON.parse(response.Payload).body.recipe;
     } catch (error) {
         return { error: true, msg: error };

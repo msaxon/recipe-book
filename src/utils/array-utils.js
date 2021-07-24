@@ -6,3 +6,13 @@ export const firstContainsAllOfSecond = (arr1, arr2) => {
     }
     return true;
 };
+
+export const splitArrayIntoChunks = (array, chunkSize) => {
+    const arrOfArr = [];
+
+    while(array.length) {
+        arrOfArr.push(array.splice(0, chunkSize));
+    }
+
+    return arrOfArr;
+}

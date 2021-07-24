@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 import {
     v4 as uuidv4
 } from 'uuid';
+import {splitArrayIntoChunks} from '../utils/array-utils';
 
 /* Helper Functions */
 const setupAuth = async accessToken => {
@@ -196,11 +197,18 @@ export const getAllUserRecipes = async (userId, accessToken) => {
             error: true,
             msg: 'You have no recipes yet'
         };
-    }
+    } 
+    
+    const recipeIdArrays = splitArrayIntoChunks(recipeIdResponse.Items[0].recipeId.SS, 100);
+
     try {
-        const recipeListResponse = await getRecipesByIdList(recipeIdResponse.Items[0].recipeId.SS, accessToken);
-        const recipeList = recipeListResponse.Responses['recipeBook-recipe'];
-        return recipeList.map(r => AWS.DynamoDB.Converter.unmarshall(r));
+        let recipes = [];
+        for (let i = 0; i < recipeIdArrays.length; i++) {
+            const recipeListResponse = await getRecipesByIdList(recipeIdArrays[i], accessToken);
+            const recipeList = recipeListResponse.Responses['recipeBook-recipe'];
+            recipes = recipes.concat(recipeList.map(r => AWS.DynamoDB.Converter.unmarshall(r)));
+        }
+        return recipes;
     } catch (error) {
         console.log('there was an error getting your recipes');
         return {
