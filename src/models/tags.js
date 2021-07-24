@@ -48,6 +48,7 @@ export const TAGS = [
     'Chicken Wing',
     'Chicken Leg',
     'Pasta Sauce',
+    
 
     //Process
     'Bake',
@@ -58,11 +59,20 @@ export const TAGS = [
     'Broil',
     'Marinade',
     'Slow Cook',
+    
+
+    //Baking
+    'No Bake Dessert',
+    'Cookie',
+    'Sponges',
 
     //tools
     'Instant Pot',
+    'Stand Mixer',
 
     //personal
     'Tried and True',
     'Needs Improvement',
+    'Untested',
+    'Meal Prep'
 ];
