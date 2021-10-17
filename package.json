@@ -1,7 +1,7 @@
 {
     "name": "recipe-book",
     "version": "0.1.0",
-    "homepage": "http://msaxon.github.io/recipe-book/",
+    "homepage": "https://recipe-book.saxon.world",
     "private": true,
     "dependencies": {
         "@hookform/error-message": "0.0.4",

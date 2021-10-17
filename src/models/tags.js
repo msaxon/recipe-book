@@ -59,6 +59,7 @@ export const TAGS = [
     'Broil',
     'Marinade',
     'Slow Cook',
+    'Smoking',
     
 
     //Baking
@@ -69,6 +70,7 @@ export const TAGS = [
     //tools
     'Instant Pot',
     'Stand Mixer',
+    'Air Fryer',
 
     //personal
     'Tried and True',
