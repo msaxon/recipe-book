@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import qs from 'qs';
 import RecipeDetailPage from './recipe-detail-page';
 import RecipeDetailIndexCard from './recipe-detail-index-card';
 import { getSingleRecipe, getAllUserRecipeIds } from '../../importer/persistance';
 import { useStore, useDispatch } from '../../utils/hooks/useStore';
 import { setUserRecipeIds } from '../../state/actions';
+import useSearchQuery from "../../utils/hooks/useSearchQuery";
 
-export default function RecipeDetailPageContainer(props) {
+export default function RecipeDetailPageContainer() {
     const [recipe, setRecipe] = useState(null);
     const { googleAuth, googleId, recipeViewMode, recipes, userRecipeIds } = useStore();
-    const recipeId = qs.parse(props.location.search, { ignoreQueryPrefix: true }).recipeId;
+    const recipeId = useSearchQuery().get('recipeId');
 
     const dispatch = useDispatch();
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Dropdown, Input } from 'semantic-ui-react';
-import qs from 'qs';
 import MultiTextInput from '../shared/input/multi-text-input';
 import RecipeBookViewModeToggle from './recipe-book-toggle';
 import RecipeBookPage from './recipe-book-page';
@@ -10,6 +9,7 @@ import { firstContainsAllOfSecond } from '../../utils/array-utils';
 import './recipe-book-page.scss';
 import RecipeBookMinimal from './recipe-book-minimal';
 import { setRecipes } from '../../state/actions';
+import useSearchQuery from "../../utils/hooks/useSearchQuery";
 
 export default function RecipeBookContainer(props) {
     // const [userRecipes, setUserRecipes] = useState([]);
@@ -19,17 +19,17 @@ export default function RecipeBookContainer(props) {
     const [errorMsg, setErrorMsg] = useState(null);
     let userId = useStore(state => state.googleId);
     const { googleAuth, recipeBookViewMode, recipes: userRecipes, recipeUserId } = useStore();
+    const userIdFromQueryString = useSearchQuery().get('userId');
 
-    const userIdQs = qs.parse(props.location.search, { ignoreQueryPrefix: true }).userId;
-    if(userIdQs) {
-        userId = userIdQs;
+    if(userIdFromQueryString) {
+        userId = userIdFromQueryString;
     }
     
     const dispatch = useDispatch();
 
     useEffect(() => {
         async function getRecipes() {
-            if (userId && googleAuth && (userRecipes === null || userIdQs || recipeUserId !== userId)) {
+            if (userId && googleAuth && (userRecipes === null || userIdFromQueryString || recipeUserId !== userId)) {
                 const recipes = await getAllUserRecipes(userId, googleAuth);
                 if (recipes.error) {
                     setErrorMsg(recipes.msg);
@@ -129,7 +129,7 @@ export default function RecipeBookContainer(props) {
                     <div className="col-12 col-lg-4">
                         <MultiTextInput onChange={setTags} />
                     </div>
-                    {userIdQs ? <p>Viewing Someone Else's Recipes</p> : null}
+                    {userIdFromQueryString ? <p>Viewing Someone Else's Recipes</p> : null}
                 </div>
                 <div>
                     <p>{errorMsg}</p>
@@ -163,7 +163,7 @@ export default function RecipeBookContainer(props) {
                 </div>
                 <div>
                     <p>{errorMsg}</p>
-                    {userIdQs ? <p>Viewing Someone Else's Recipes</p> : null}
+                    {userIdFromQueryString ? <p>Viewing Someone Else's Recipes</p> : null}
                 </div>
                 <RecipeBookPage userRecipes={sortRecipes(userRecipes)} />
             </div>
