@@ -12,9 +12,12 @@ jobs:
               with:
                   persist-credentials: false
             - name: Build
+              with:
+                node-version: '14'
               run: |
                   npm install
                   npm run-script build
+
             - name: Deploy
               uses: JamesIves/github-pages-deploy-action@releases/v3
               with:
