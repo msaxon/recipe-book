@@ -12,8 +12,9 @@ jobs:
               with:
                   persist-credentials: false
             - name: Build
-              with:
-                node-version: '14'
+              - uses: actions/setup-node@v2
+                with:
+                  node-version: '14'
               run: |
                   npm install
                   npm run-script build
