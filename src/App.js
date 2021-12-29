@@ -1,5 +1,5 @@
 import React from 'react';
-import {HashRouter, Route} from 'react-router-dom';
+import {HashRouter, Route, Routes} from 'react-router-dom';
 import { useGoogleLogin } from 'react-google-login';
 import { Home} from './views/home/home-route';
 import {HeaderMenu} from './views/shared/menu/header-menu';
@@ -45,16 +45,18 @@ const App = () => {
 
     let routes = ( 
         <div className = "app" >
-            <Route path = "/" exact component = {Home} /> 
-            <ProtectedRoute path = "/recipes" exact component = { RecipeBookContainer}/> 
-            <ProtectedRoute path = "/recipes/import" component = {ImportPage}/> 
-            <ProtectedRoute path = "/recipes/details" component = {RecipeDetailPageContainer}/> 
-            <ProtectedRoute path = "/recipes/create" component = {CreateRecipePage}/> 
-            <ProtectedRoute path = "/recipes/edit" component = {CreateRecipePage}/> 
-            <ProtectedRoute path = "/recipes/community" component = {CommunityPage} />
-            <Route path = "/privacy" component = {Privacy}/> 
-            <Route path = "/about" component = { AboutPage} /> 
-            <Route path = "/contact" component = {Contact} />
+            <Routes>
+                <Route path = "/" exact element={<Home />} />
+                <Route path = "/privacy" element={<Privacy />} />
+                <Route path = "/about" element={<AboutPage />} />
+                <Route path = "/contact" element={<Contact />} />
+                <Route path = "/recipes" element={<ProtectedRoute><RecipeBookContainer /></ProtectedRoute>} />
+                <Route path = "/recipes/import" element={<ProtectedRoute><ImportPage /></ProtectedRoute>} />
+                <Route path = "/recipes/details" element={<ProtectedRoute><RecipeDetailPageContainer /></ProtectedRoute>} />
+                <Route path = "/recipes/create" element={<ProtectedRoute><CreateRecipePage /></ProtectedRoute>} />
+                <Route path = "/recipes/edit" element={<ProtectedRoute><CreateRecipePage /></ProtectedRoute>} />
+                <Route path = "/recipes/community" element={<ProtectedRoute><CommunityPage /></ProtectedRoute>} />
+            </Routes>
         </div>
     );
 
@@ -71,7 +73,7 @@ const App = () => {
             <div className = "app-wrapper">
                 <HeaderMenu /> 
                 {routes} 
-                <Footer / >
+                <Footer />
             </div> 
         </HashRouter>
     );

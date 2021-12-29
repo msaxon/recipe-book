@@ -10,6 +10,7 @@ import { setImportedRecipe } from '../../state/actions';
 import { putNewRecipe, updateOldRecipe } from '../../importer/persistance';
 import Recipe from '../../models/recipe';
 import './create-recipe.scss';
+import {useNavigate} from "react-router-dom";
 
 /**
  * TODO:
@@ -35,6 +36,7 @@ export default function CreateRecipePage(props) {
         : undefined;
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const { handleSubmit, register, errors, control } = useForm({ defaultValues });
 
@@ -68,7 +70,7 @@ export default function CreateRecipePage(props) {
                 console.log('there was an error hitting aws');
             } else {
                 dispatch(setImportedRecipe(null));
-                props.history.push('/recipes/details?recipeId=' + response.recipeId);
+                navigate('/recipes/details?recipeId=' + response.recipeId)
             }
         } catch (err) {
             console.log('error!', err);

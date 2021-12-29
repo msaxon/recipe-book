@@ -1,5 +1,5 @@
 import React from 'react';
-import { css } from '@emotion/core';
+import { css } from '@emotion/react';
 import PacmanLoader from 'react-spinners/PacmanLoader';
 import './async-loader.scss';
 

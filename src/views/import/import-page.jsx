@@ -7,7 +7,7 @@ import { useStore, useDispatch } from '../../utils/hooks/useStore';
 import { disableLoader, enableLoader, setImportedRecipe } from '../../state/actions';
 import './import-page.scss';
 
-export default function (props) {
+export default function ImportPage(props) {
     const [url, setUrl] = useState('');
     const [importError, setImportError] = useState(null);
     const googleAuth = useStore(state => state.googleAuth);

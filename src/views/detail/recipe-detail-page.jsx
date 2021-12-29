@@ -4,21 +4,22 @@ import { Button, Input, Popup } from 'semantic-ui-react';
 import { Fraction } from 'fractional';
 import RecipeViewModeToggle from './recipe-view-mode-toggle';
 import { deleteRecipeRelationship, deleteRecipe, putNewRecipeRelationship } from '../../importer/persistance';
-
 import { setImportedRecipe } from '../../state/actions';
 import { convertMarkdownToHtml } from '../../utils/markdown-utils';
 import { minutesToTime } from '../../utils/time-utils';
 import { useStore, useDispatch } from '../../utils/hooks/useStore';
 import './recipe-detail.scss';
-import { withRouter } from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
 
-function RecipeDetailPage(props) {
+
+export default function RecipeDetailPage(props) {
     const [scale, setScale] = useState(1);
     const [isScaleModalOpen, setIsScaleModalOpen] = useState(false);
     const [scaleModalInput, setScaleModalInput] = useState('');
     const [serviceCallError, setServiceCallError] = useState(false);
     const { googleAuth, googleId } = useStore();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     let recipeIngredients = props.recipe.ingredients;
 
@@ -58,7 +59,7 @@ function RecipeDetailPage(props) {
 
     const editRecipe = () => {
         dispatch(setImportedRecipe(props.recipe));
-        props.history.push('/recipes/edit');
+        navigate('/recipes/edit');
     };
 
     const removeRecipe = async () => {
@@ -66,7 +67,7 @@ function RecipeDetailPage(props) {
         if (response.error) {
             setServiceCallError(true);
         } else {
-            props.history.push('/recipes');
+            navigate('/recipes')
         }
     };
 
@@ -75,7 +76,7 @@ function RecipeDetailPage(props) {
         if (response.error) {
             setServiceCallError(true);
         } else {
-            props.history.push('/recipes');
+            navigate('/recipes')
         }
     };
 
@@ -271,5 +272,3 @@ function RecipeDetailPage(props) {
         </div>
     );
 }
-
-export default withRouter(RecipeDetailPage);
