@@ -1,4 +1,4 @@
-import React, {ReactChildren} from 'react';
+import React from 'react';
 import { setRedirectUrl } from '../../../state/actions';
 import { useStore, useDispatch } from '../../../utils/hooks/useStore';
 import { GoogleSignOn } from './google-sign-on';

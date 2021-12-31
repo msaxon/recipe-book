@@ -11,14 +11,12 @@ export function GoogleSignOn() {
     const dispatch = useDispatch();
 
     const onSuccess = (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-        console.log('meow');
         const response: GoogleLoginResponse = res as GoogleLoginResponse;
         // @ts-ignore
         dispatch(signInGoogleAuth(response.googleId, response.tokenId));
     }
 
     const onFailure = (res: any) => {
-        console.log('res', res);
         console.log('user is not logged in');
     }
 
