@@ -1,24 +1,23 @@
-import React from 'react';
-import { setRedirectUrl } from '../../../state/actions';
-import { useStore, useDispatch } from '../../../utils/hooks/useStore';
+import React, { useContext, useEffect } from 'react';
 import { GoogleSignOn } from './google-sign-on';
+import { AuthContext } from '../../../App';
 
 interface IProps {
-    children: JSX.Element;
+  children: JSX.Element;
 }
 
 export default function ProtectedRoute({ children }: IProps) {
-    const { redirectUrl, googleAuth } = useStore();
-    const dispatch = useDispatch();
+  const { googleAuth, redirectUrl, setRedirectUrl } = useContext(AuthContext);
 
-    if (googleAuth) {
-        return <>{children}</>;
-    } else {
-        if(!redirectUrl) {
-            // @ts-ignore
-            dispatch(setRedirectUrl(window.location.href));
-        } 
-        
-        return <GoogleSignOn />;
+  useEffect(() => {
+    if (!redirectUrl) {
+      setRedirectUrl(window.location.href);
     }
+  }, [redirectUrl]);
+
+  if (googleAuth) {
+    return <>{children}</>;
+  } else {
+    return <GoogleSignOn />;
+  }
 }
