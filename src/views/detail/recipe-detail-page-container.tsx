@@ -7,10 +7,11 @@ import { getSingleRecipe } from '../../aws/dynamo-facade';
 import { useQuery } from 'react-query';
 import { GET_RECIPE_BY_ID } from '../../utils/constants';
 import AsyncLoader from '../shared/interstitial/async-loader';
-import { AuthContext } from '../../App';
+import { AuthContext, RecipeContext } from '../../App';
 
 export default function RecipeDetailPageContainer() {
-  const { recipeViewMode, userRecipeIds } = useStore();
+  const { userRecipeIds } = useStore();
+  const { recipeViewMode } = useContext(RecipeContext);
   const { googleAuth } = useContext(AuthContext);
   const recipeId = useSearchQuery().get('recipeId');
 

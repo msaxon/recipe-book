@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Checkbox, Popup } from 'semantic-ui-react';
-import { useStore, useDispatch } from '../../utils/hooks/useStore';
-import { setRecipeBookViewMode } from '../../state/actions';
 import './recipe-book-page.scss';
 import { CheckboxProps } from 'semantic-ui-react/dist/commonjs/modules/Checkbox/Checkbox';
+import { RecipeContext } from '../../App';
 
 export default function RecipeBookViewModeToggle() {
-  const { recipeBookViewMode } = useStore();
-  const dispatch = useDispatch();
+  const { recipeBookViewMode, setRecipeBookViewMode } =
+    useContext(RecipeContext);
+  const x = useContext(RecipeContext);
+  console.log('x', x);
+
   const onChange = (
     event: React.FormEvent<HTMLInputElement>,
     d: CheckboxProps
   ) => {
-    dispatch(setRecipeBookViewMode(d.checked ? 'minimal' : 'default'));
+    console.log('toggling', d.checked ? 'minimal' : 'default');
+    setRecipeBookViewMode(d.checked ? 'minimal' : 'default');
   };
 
   const text =

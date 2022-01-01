@@ -3,7 +3,6 @@ import { Dropdown, Input } from 'semantic-ui-react';
 import MultiTextInput from '../shared/input/multi-text-input';
 import RecipeBookViewModeToggle from './recipe-book-toggle';
 import RecipeBookPage from './recipe-book-page';
-import { useStore } from '../../utils/hooks/useStore';
 import { firstContainsAllOfSecond } from '../../utils/array-utils';
 import RecipeBookMinimal from './recipe-book-minimal';
 import useSearchQuery from '../../utils/hooks/useSearchQuery';
@@ -13,7 +12,7 @@ import './recipe-book-page.scss';
 import { useQuery } from 'react-query';
 import { GET_RECIPE_IDS_BY_USER } from '../../utils/constants';
 import AsyncLoader from '../shared/interstitial/async-loader';
-import { AuthContext } from '../../App';
+import { AuthContext, RecipeContext } from '../../App';
 
 export default function RecipeBookContainer() {
   const [tags, setTags] = useState([]);
@@ -21,7 +20,7 @@ export default function RecipeBookContainer() {
   const [sort, setSort] = useState('recipeName_asc');
   let { googleId: userId } = useContext(AuthContext);
   const { googleAuth } = useContext(AuthContext);
-  const { recipeBookViewMode } = useStore();
+  const { recipeBookViewMode } = useContext(RecipeContext);
   const userIdFromQueryString = useSearchQuery().get('userId');
 
   if (userIdFromQueryString) {

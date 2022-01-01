@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, { ChangeEvent, createContext, useContext, useState } from 'react';
 import Modal from 'react-modal';
 import { Button, Input, Popup } from 'semantic-ui-react';
 import { Fraction } from 'fractional';
@@ -9,7 +9,11 @@ import { minutesToTime } from '../../utils/time-utils';
 import { useDispatch } from '../../utils/hooks/useStore';
 import './recipe-detail.scss';
 import { useNavigate } from 'react-router-dom';
-import { Recipe } from '../../models/interfaces';
+import {
+  Recipe,
+  RecipeBookViewMode,
+  RecipeViewMode,
+} from '../../models/interfaces';
 import {
   deleteRecipe,
   deleteRecipeRelationship,
@@ -27,7 +31,6 @@ export default function RecipeDetailPage(props: IProps) {
   const [isScaleModalOpen, setIsScaleModalOpen] = useState(false);
   const [scaleModalInput, setScaleModalInput] = useState('');
   const { googleAuth, googleId } = useContext(AuthContext);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

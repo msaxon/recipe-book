@@ -17,12 +17,11 @@ import RecipeDetailPageContainer from './views/detail/recipe-detail-page-contain
 import RecipeBookContainer from './views/recipe/recipe-book-container';
 import Contact from './views/contact/contact';
 import CommunityPage from './views/community/community';
-import { useDispatch } from './utils/hooks/useStore';
-import { signInGoogleAuth } from './state/actions';
 import { clientId } from './utils/constants';
 import './App.scss';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { RecipeBookViewMode, RecipeViewMode } from './models/interfaces';
 
 interface AuthProps {
   googleId: string;
@@ -33,12 +32,18 @@ interface AuthProps {
   setRedirectUrl: (url: string | undefined) => void;
 }
 
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000,
-    },
-  },
+interface RecipeContextProps {
+  recipeViewMode: RecipeViewMode;
+  recipeBookViewMode: RecipeBookViewMode;
+  setRecipeViewMode: (m: RecipeViewMode) => void;
+  setRecipeBookViewMode: (m: RecipeBookViewMode) => void;
+}
+
+export const RecipeContext = createContext<RecipeContextProps>({
+  recipeViewMode: 'default',
+  recipeBookViewMode: 'default',
+  setRecipeViewMode: () => {},
+  setRecipeBookViewMode: () => {},
 });
 
 export const AuthContext = createContext<AuthProps>({
@@ -50,18 +55,26 @@ export const AuthContext = createContext<AuthProps>({
   setRedirectUrl: () => {},
 });
 
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000,
+    },
+  },
+});
+
 export default function App() {
   const [googleId, setGoogleId] = useState('');
   const [googleAuth, setGoogleAuth] = useState('');
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState<string | undefined>(undefined);
-
-  const dispatch = useDispatch();
+  const [recipeViewMode, setRecipeViewMode] =
+    useState<RecipeViewMode>('default');
+  const [recipeBookViewMode, setRecipeBookViewMode] =
+    useState<RecipeBookViewMode>('default');
 
   const onSuccess = (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
     const response: GoogleLoginResponse = res as GoogleLoginResponse;
-    // @ts-ignore
-    dispatch(signInGoogleAuth(response.googleId, response.tokenId));
     setGoogleId(response.googleId);
     setGoogleAuth(response.tokenId);
     setIsSignedIn(true);
@@ -151,14 +164,23 @@ export default function App() {
           setRedirectUrl,
         }}
       >
-        <QueryClientProvider client={queryClient}>
-          <div className="app-wrapper">
-            <HeaderMenu />
-            {routes}
-            <Footer />
-          </div>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <RecipeContext.Provider
+          value={{
+            recipeViewMode,
+            recipeBookViewMode,
+            setRecipeViewMode,
+            setRecipeBookViewMode,
+          }}
+        >
+          <QueryClientProvider client={queryClient}>
+            <div className="app-wrapper">
+              <HeaderMenu />
+              {routes}
+              <Footer />
+            </div>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </QueryClientProvider>
+        </RecipeContext.Provider>
       </AuthContext.Provider>
     </HashRouter>
   );
