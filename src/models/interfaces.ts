@@ -1,34 +1,37 @@
 export interface UserRecipe {
-    userId: string;
-    recipeId: string[];
+  userId: string;
+  recipeId: string[];
 }
 
 export interface Origin {
-    ownerId: string | undefined;
-    authorName: string;
-    url: string;
-    website: string;
+  ownerId: string | undefined;
+  authorName: string;
+  url: string;
+  website: string;
 }
 
 export interface RecipeBase {
-    recipeName: string;
-    origin: Origin;
-    ingredients: string;
-    steps: string;
-    servings: string;
-    activeTimeMinutes?: number;
-    totalTimeMinutes?: number;
-    image?: string;
-    notes?: string;
-    tags?: string[];
-    creationTimeStamp?: number;
+  recipeName: string;
+  origin: Origin;
+  ingredients: string;
+  steps: string;
+  servings: string;
+  activeTimeMinutes?: number;
+  totalTimeMinutes?: number;
+  image?: string;
+  notes?: string;
+  tags?: string[];
+  creationTimeStamp?: number;
 }
 
 export interface Recipe extends RecipeBase {
-    recipeId: string;
+  recipeId: string;
 }
 
 export interface User {
-    userId: string;
-    username: string;
+  userId: string;
+  username: string;
 }
+
+export type RecipeViewMode = 'default' | 'index';
+export type RecipeBookViewMode = 'default' | 'minimal';

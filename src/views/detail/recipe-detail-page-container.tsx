@@ -1,51 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import RecipeDetailPage from './recipe-detail-page';
 import RecipeDetailIndexCard from './recipe-detail-index-card';
-import { useStore, useDispatch } from '../../utils/hooks/useStore';
-import { setUserRecipeIds } from '../../state/actions';
-import useSearchQuery from "../../utils/hooks/useSearchQuery";
-import {Recipe} from "../../models/interfaces";
-import {getAllUserRecipeIds, getSingleRecipe} from "../../aws/dynamo-facade";
+import { useStore } from '../../utils/hooks/useStore';
+import useSearchQuery from '../../utils/hooks/useSearchQuery';
+import { getSingleRecipe } from '../../aws/dynamo-facade';
+import { useQuery } from 'react-query';
+import { GET_RECIPE_BY_ID } from '../../utils/constants';
+import AsyncLoader from '../shared/interstitial/async-loader';
+import { AuthContext, RecipeContext } from '../../App';
 
 export default function RecipeDetailPageContainer() {
-    const [recipe, setRecipe] = useState<Recipe | null>(null);
-    const { googleAuth, googleId, recipeViewMode, recipes, userRecipeIds } = useStore();
-    const recipeId = useSearchQuery().get('recipeId');
+  const { userRecipeIds } = useStore();
+  const { recipeViewMode } = useContext(RecipeContext);
+  const { googleAuth } = useContext(AuthContext);
+  const recipeId = useSearchQuery().get('recipeId');
 
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        async function getRecipe(recipeId: string, googleAuth: string) {
-            setRecipe(await getSingleRecipe(recipeId, googleAuth));
-        }
-
-        async function getUserRecipeIds() {
-            dispatch(setUserRecipeIds(await getAllUserRecipeIds(googleId, googleAuth)));
-        }
-
-        const recipeInState: Recipe = recipes && recipes.find(r => r.recipeId === recipeId) as Recipe;
-        
-        if(recipeInState !== null && recipeInState !== undefined) {
-            setRecipe(recipeInState);
-        } else if (recipeId && googleAuth) {
-            getRecipe(recipeId, googleAuth);
-        } else {
-            console.error('THERE NEEDS TO BE A RECIPE ID AND AUTH');
-        }
-
-        if(userRecipeIds == null) {
-            getUserRecipeIds();
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [recipeId, googleId, googleAuth]);
-
-    if (recipe === null || recipe === undefined || userRecipeIds === null) {
-        return <div>Loading...</div>;
+  const {
+    data: recipe,
+    isLoading,
+    isError,
+  } = useQuery(
+    [GET_RECIPE_BY_ID, recipeId],
+    () => getSingleRecipe(recipeId || '', googleAuth),
+    {
+      enabled: !!recipeId,
     }
+  );
 
-    if (recipeViewMode === 'index') {
-        return <RecipeDetailIndexCard recipe={recipe} />;
-    } else {
-        return <RecipeDetailPage recipe={recipe} userRecipeIds={userRecipeIds || []} />;
-    }
+  if (isLoading) {
+    return <AsyncLoader />;
+  } else if (isError || !recipe) {
+    return <p>An error occurred loading the recipe.</p>;
+  }
+
+  if (recipeViewMode === 'index') {
+    return <RecipeDetailIndexCard recipe={recipe} />;
+  } else {
+    return (
+      <RecipeDetailPage recipe={recipe} userRecipeIds={userRecipeIds || []} />
+    );
+  }
 }
