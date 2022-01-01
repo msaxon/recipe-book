@@ -22,6 +22,7 @@ import './App.scss';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { RecipeBookViewMode, RecipeViewMode } from './models/interfaces';
+import { Dimmer, Loader } from 'semantic-ui-react';
 
 interface AuthProps {
   googleId: string;
@@ -35,15 +36,19 @@ interface AuthProps {
 interface RecipeContextProps {
   recipeViewMode: RecipeViewMode;
   recipeBookViewMode: RecipeBookViewMode;
+  showLoading: string | null;
   setRecipeViewMode: (m: RecipeViewMode) => void;
   setRecipeBookViewMode: (m: RecipeBookViewMode) => void;
+  setShowLoading: (m: string | null) => void;
 }
 
 export const RecipeContext = createContext<RecipeContextProps>({
   recipeViewMode: 'default',
   recipeBookViewMode: 'default',
+  showLoading: null,
   setRecipeViewMode: () => {},
   setRecipeBookViewMode: () => {},
+  setShowLoading: () => {},
 });
 
 export const AuthContext = createContext<AuthProps>({
@@ -72,6 +77,7 @@ export default function App() {
     useState<RecipeViewMode>('default');
   const [recipeBookViewMode, setRecipeBookViewMode] =
     useState<RecipeBookViewMode>('default');
+  const [showLoading, setShowLoading] = useState<string | null>(null);
 
   const onSuccess = (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
     const response: GoogleLoginResponse = res as GoogleLoginResponse;
@@ -168,12 +174,17 @@ export default function App() {
           value={{
             recipeViewMode,
             recipeBookViewMode,
+            showLoading,
             setRecipeViewMode,
             setRecipeBookViewMode,
+            setShowLoading,
           }}
         >
           <QueryClientProvider client={queryClient}>
             <div className="app-wrapper">
+              <Dimmer active={!!showLoading}>
+                <Loader>{showLoading}</Loader>
+              </Dimmer>
               <HeaderMenu />
               {routes}
               <Footer />
