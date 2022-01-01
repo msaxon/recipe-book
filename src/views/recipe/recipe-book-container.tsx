@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Dropdown, Input } from 'semantic-ui-react';
 import MultiTextInput from '../shared/input/multi-text-input';
 import RecipeBookViewModeToggle from './recipe-book-toggle';
@@ -11,7 +11,6 @@ import { Recipe } from '../../models/interfaces';
 import './recipe-book-page.scss';
 import { useQuery } from 'react-query';
 import { GET_RECIPE_IDS_BY_USER } from '../../utils/constants';
-import AsyncLoader from '../shared/interstitial/async-loader';
 import { AuthContext, RecipeContext } from '../../App';
 
 export default function RecipeBookContainer() {
@@ -20,7 +19,7 @@ export default function RecipeBookContainer() {
   const [sort, setSort] = useState('recipeName_asc');
   let { googleId: userId } = useContext(AuthContext);
   const { googleAuth } = useContext(AuthContext);
-  const { recipeBookViewMode } = useContext(RecipeContext);
+  const { recipeBookViewMode, setShowLoading } = useContext(RecipeContext);
   const userIdFromQueryString = useSearchQuery().get('userId');
 
   if (userIdFromQueryString) {
@@ -34,6 +33,10 @@ export default function RecipeBookContainer() {
   } = useQuery([GET_RECIPE_IDS_BY_USER, userId], () =>
     getAllUserRecipes(userId, googleAuth)
   );
+
+  useEffect(() => {
+    setShowLoading(isLoading ? 'Fetching Recipes' : null);
+  }, [isLoading]);
 
   const sortOptions = [
     {
@@ -106,7 +109,7 @@ export default function RecipeBookContainer() {
   };
 
   if (isLoading) {
-    return <AsyncLoader loadingText="Loading Recipes" />;
+    return <></>;
   } else if (isError || !recipes) {
     return <p>There was an error fetching the recipes.</p>;
   }
