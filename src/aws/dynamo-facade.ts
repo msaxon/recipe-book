@@ -1,4 +1,3 @@
-import { splitArrayIntoChunks } from '../utils/array-utils';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Recipe, RecipeBase, User } from '../models/interfaces';
@@ -18,29 +17,38 @@ import {
   dbResponseToUsers,
 } from './dynamo-utils';
 
-export const getAllUserRecipes = async (
+export interface PaginatedRecipeResponse {
+  results: Recipe[];
+  nextPage: number;
+  totalPages: number;
+}
+
+const PAGE_SIZE = 25;
+
+export const getAllUserRecipesByPage = async (
   userId: string,
-  accessToken: string
-): Promise<Recipe[]> => {
-  //get recipeIds
+  accessToken: string,
+  pageNumber: number
+): Promise<PaginatedRecipeResponse> => {
   const recipeIdResponse = await getRecipeIdsByUser(userId, accessToken);
   const recipeIds = dbResponseToRecipeIds(recipeIdResponse.Items?.[0]);
-  const recipeIdArrays = splitArrayIntoChunks(recipeIds, 100);
+  const recipeIdsOnPage = recipeIds.slice(
+    pageNumber * PAGE_SIZE,
+    pageNumber * PAGE_SIZE + PAGE_SIZE
+  );
 
-  //get lists
-  let recipes: Recipe[] = [];
-  for (let i = 0; i < recipeIdArrays.length; i++) {
-    const recipeListResponse = await getRecipesByIdList(
-      recipeIdArrays[i],
-      accessToken
-    );
-    const recipeList = dbResponseToRecipeList(
-      recipeListResponse.Responses?.['recipeBook-recipe']
-    );
-    recipes = recipes.concat(recipeList);
-  }
-
-  return Promise.resolve(recipes);
+  const recipeListResponse = await getRecipesByIdList(
+    recipeIdsOnPage,
+    accessToken
+  );
+  const recipeList = dbResponseToRecipeList(
+    recipeListResponse.Responses?.['recipeBook-recipe']
+  );
+  return Promise.resolve({
+    results: recipeList,
+    nextPage: pageNumber + 1,
+    totalPages: Math.ceil(recipeIds.length / PAGE_SIZE),
+  });
 };
 
 export const getSingleRecipe = async (

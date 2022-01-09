@@ -7,8 +7,6 @@ import { RecipeContext } from '../../App';
 export default function RecipeBookViewModeToggle() {
   const { recipeBookViewMode, setRecipeBookViewMode } =
     useContext(RecipeContext);
-  const x = useContext(RecipeContext);
-  console.log('x', x);
 
   const onChange = (
     event: React.FormEvent<HTMLInputElement>,
