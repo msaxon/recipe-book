@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { Card, Container, Space, Text } from '@mantine/core';
+import { Card, Container, Text } from '@mantine/core';
 
 import type { Recipe } from '../../models/interfaces';
 
