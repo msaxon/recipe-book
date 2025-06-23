@@ -1,71 +1,75 @@
-@import '../../App.scss';
+@use '../../App.scss';
 
 %page-section {
-    width: 90%;
-    margin: 1em;
+  width: 90%;
+  margin: 1em;
 }
 
 %centering-parent {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .recipe-detail-wrapper {
+  padding: 0 2em;
+
+  @extend %centering-parent;
+
+  .recipe-detail-img-wrapper {
     @extend %centering-parent;
 
-    .recipe-detail-img-wrapper {
-        @extend %centering-parent;
-
-        img {
-            @extend %page-section;
-            max-width: 400px;
-            max-height: 400px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        }
+    img {
+      @extend %page-section;
+      max-width: 400px;
+      max-height: 400px;
+      border-radius: 8px;
+      box-shadow:
+        0 4px 8px 0 rgba(0, 0, 0, 0.2),
+        0 6px 20px 0 rgba(0, 0, 0, 0.19);
     }
+  }
 
-    .recipe-detail-wrapper {
-        align-items: flex-start;
-        justify-content: flex-start;
-        border-bottom: solid $dark-background;
+  .recipe-detail-wrapper {
+    align-items: flex-start;
+    justify-content: flex-start;
+    border-bottom: solid $dark-background;
 
-        .recipe-details {
-            display: flex;
-            flex-direction: column;
-            text-align: left;
-            width: 100%;
-            padding: 1em;
+    .recipe-details {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      width: 100%;
+      padding: 1em;
 
-            div {
-                @extend %page-section;
-                display: flex;
-                flex-direction: column;
-            }
-        }
+      div {
+        @extend %page-section;
+        display: flex;
+        flex-direction: column;
+      }
     }
+  }
 
-    .recipe-ingredients-wrapper {
-        @extend %centering-parent;
-        text-align: left;
+  .recipe-ingredients-wrapper {
+    @extend %centering-parent;
+    text-align: left;
 
-        div {
-            @extend %page-section;
-        }
+    div {
+      @extend %page-section;
     }
+  }
 
-    .recipe-steps-wrapper {
-        @extend %centering-parent;
-        text-align: left;
+  .recipe-steps-wrapper {
+    @extend %centering-parent;
+    text-align: left;
 
-        div {
-            @extend %page-section;
-        }
+    div {
+      @extend %page-section;
     }
+  }
 }
 
 /******* OVERRIDE *******/
-.ui.grid>.column:not(.row) {
-    display: flex;
+.ui.grid > .column:not(.row) {
+  display: flex;
 }

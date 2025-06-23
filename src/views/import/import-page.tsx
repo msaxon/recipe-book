@@ -1,19 +1,24 @@
-import React, { useContext, useState } from 'react';
-import PromiseLoadingSpinner from 'promise-loading-spinner';
-import { Input, Button } from 'semantic-ui-react';
-import { importRecipe } from '../../aws/importer';
-import { supportedSites } from '../../data/supported-websites';
-import { setImportedRecipe } from '../../state/actions';
-import './import-page.scss';
+import { useState } from 'react';
+
 import { useNavigate } from 'react-router-dom';
-import { AuthContext, RecipeContext } from '../../App';
-import { useDispatch } from '../../utils/hooks/useStore';
+
+import { Button, TextInput } from '@mantine/core';
+import PromiseLoadingSpinner from 'promise-loading-spinner';
+
+import { importRecipe } from '../../aws/importer';
+import { useAuthContext } from '../../context/auth-context.tsx';
+import { useRecipeContext } from '../../context/recipe-context.tsx';
+import { supportedSites } from '../../data/supported-websites';
+import { useDispatch } from '../../hooks/useStore';
+import { setImportedRecipe } from '../../state/actions';
+
+import './import-page.scss';
 
 export default function ImportPage() {
   const [url, setUrl] = useState('');
   const [importError, setImportError] = useState(null);
-  const { googleAuth } = useContext(AuthContext);
-  const { setShowLoading } = useContext(RecipeContext);
+  const { googleAuth } = useAuthContext();
+  const { setShowLoading } = useRecipeContext();
 
   const dispatch = useDispatch();
 
@@ -22,9 +27,9 @@ export default function ImportPage() {
   const loader = new PromiseLoadingSpinner();
 
   const handleImportRecipe = loader.wrapFunction(async () => {
-    setShowLoading('Importing Recipe');
+    setShowLoading(true);
     const recipe = await importRecipe(url, googleAuth);
-    setShowLoading(null);
+    setShowLoading(false);
     if (recipe.error) {
       setImportError(recipe.msg);
     } else {
@@ -38,12 +43,11 @@ export default function ImportPage() {
   return (
     <div className="import-parent">
       <h2>Recipe Importer</h2>
-      <Input
-        fluid
-        action={<Button content="Import" onClick={handleImportRecipe} />}
+      <TextInput
         placeholder="https://www.seriouseats.com/recipes/2020/07/lamb-biryani.html"
         onChange={(e) => setUrl(e.target.value)}
       />
+      <Button content="Import" onClick={handleImportRecipe} />
       {importErrorContainer}
       <div className="supported-sites">
         <h2>Supported Sites</h2>

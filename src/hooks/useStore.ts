@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { Store } from '../../state/store';
+
+import { Store } from '../state/store';
 
 export function useStore() {
   const { state } = useContext(Store);

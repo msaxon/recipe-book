@@ -1,31 +1,32 @@
-import {Dispatch, ReactElement} from "react";
-import {Recipe} from "../models/interfaces";
+import type { Dispatch, ReactElement } from 'react';
+
+import type { Recipe } from '../models/interfaces';
 
 export interface IStore {
-    darkMode: boolean;
-    isSignedIn: boolean;
-    googleAuth: string;
-    googleId: string;
-    isLoaderActive: boolean;
-    recipeViewMode: string;
-    recipeBookViewMode: string;
-    recipes: Recipe[];
-    userRecipeIds?: string[];
-    redirectUrl?: string;
-    importedRecipe?: Recipe;
-    recipeUserId: string;
+  darkMode: boolean;
+  isSignedIn: boolean;
+  googleAuth: string;
+  googleId: string;
+  isLoaderActive: boolean;
+  recipeViewMode: string;
+  recipeBookViewMode: string;
+  recipes: Recipe[];
+  userRecipeIds?: string[];
+  redirectUrl?: string;
+  importedRecipe?: Recipe;
+  recipeUserId: string;
 }
 
 export interface IAction {
-    type: string;
-    payload: any;
+  type: string;
+  payload: any;
 }
 
 export interface IStoreProviderProps {
-    children: ReactElement;
+  children: ReactElement;
 }
 
 export interface IStoreValue {
-    state: IStore;
-    dispatch: Dispatch<any>;
+  state: IStore;
+  dispatch: Dispatch<any>;
 }

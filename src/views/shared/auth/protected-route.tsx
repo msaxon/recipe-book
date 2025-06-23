@@ -1,19 +1,16 @@
-import React, { useContext, useEffect } from 'react';
+import { type PropsWithChildren, useEffect } from 'react';
+
+import { useAuthContext } from '../../../context/auth-context.tsx';
 import { GoogleSignOn } from './google-sign-on';
-import { AuthContext } from '../../../App';
 
-interface IProps {
-  children: JSX.Element;
-}
-
-export default function ProtectedRoute({ children }: IProps) {
-  const { googleAuth, redirectUrl, setRedirectUrl } = useContext(AuthContext);
+export default function ProtectedRoute({ children }: PropsWithChildren) {
+  const { googleAuth, redirectUrl, setRedirectUrl } = useAuthContext();
 
   useEffect(() => {
     if (!redirectUrl) {
       setRedirectUrl(window.location.href);
     }
-  }, [redirectUrl]);
+  }, [redirectUrl, setRedirectUrl]);
 
   if (googleAuth) {
     return <>{children}</>;

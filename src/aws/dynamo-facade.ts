@@ -1,7 +1,7 @@
-import { splitArrayIntoChunks } from '../utils/array-utils';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Recipe, RecipeBase, User } from '../models/interfaces';
+import type { Recipe, RecipeBase, User } from '../models/interfaces';
+import { splitArrayIntoChunks } from '../utils/array-utils';
 import {
   deleteRecipeActual,
   getRecipeById,
@@ -11,12 +11,6 @@ import {
   postRecipe,
   postRecipeUserRelationship,
 } from './dynamo';
-import {
-  dbResponseToRecipe,
-  dbResponseToRecipeIds,
-  dbResponseToRecipeList,
-  dbResponseToUsers,
-} from './dynamo-utils';
 
 export const getAllUserRecipes = async (
   userId: string,
@@ -24,8 +18,8 @@ export const getAllUserRecipes = async (
 ): Promise<Recipe[]> => {
   //get recipeIds
   const recipeIdResponse = await getRecipeIdsByUser(userId, accessToken);
-  const recipeIds = dbResponseToRecipeIds(recipeIdResponse.Items?.[0]);
-  const recipeIdArrays = splitArrayIntoChunks(recipeIds, 100);
+  const recipeIds = recipeIdResponse.Items?.[0].recipeId as Set<string>;
+  const recipeIdArrays = splitArrayIntoChunks(Array.from(recipeIds), 100);
 
   //get lists
   let recipes: Recipe[] = [];
@@ -34,9 +28,10 @@ export const getAllUserRecipes = async (
       recipeIdArrays[i],
       accessToken
     );
-    const recipeList = dbResponseToRecipeList(
-      recipeListResponse.Responses?.['recipeBook-recipe']
-    );
+    const recipeList = recipeListResponse.Responses?.[
+      'recipeBook-recipe'
+    ] as Recipe[];
+
     recipes = recipes.concat(recipeList);
   }
 
@@ -48,7 +43,7 @@ export const getSingleRecipe = async (
   accessToken: string
 ): Promise<Recipe> => {
   const recipeResponse = await getRecipeById(recipeId, accessToken);
-  return dbResponseToRecipe(recipeResponse.Item);
+  return recipeResponse.Item as Recipe;
 };
 
 export const postNewRecipe = async (
@@ -91,7 +86,7 @@ export const deleteRecipeRelationship = async (
   accessToken: string
 ): Promise<void> => {
   const recipeIdsResponse = await getRecipeIdsByUser(userId, accessToken);
-  let recipeIds = dbResponseToRecipeIds(recipeIdsResponse.Items?.[0]);
+  let recipeIds = recipeIdsResponse.Items?.[0] as string[];
   recipeIds = recipeIds.filter((id) => id !== recipe.recipeId);
 
   //update recipeIds
@@ -113,7 +108,7 @@ export const getAllUserRecipeIds = async (
   accessToken: string
 ): Promise<string[]> => {
   const recipeIdResponse = await getRecipeIdsByUser(userId, accessToken);
-  return dbResponseToRecipeIds(recipeIdResponse.Items?.[0]);
+  return recipeIdResponse.Items?.[0] as string[];
 };
 
 export const putNewRecipeRelationship = async (
@@ -123,7 +118,7 @@ export const putNewRecipeRelationship = async (
 ) => {
   //get the user
   const recipeIdsResponse = await getRecipeIdsByUser(userId, accessToken);
-  const recipeIds = dbResponseToRecipeIds(recipeIdsResponse.Items?.[0]);
+  const recipeIds = recipeIdsResponse.Items?.[0] as string[];
 
   recipeIds.push(recipeId);
 
@@ -133,5 +128,5 @@ export const putNewRecipeRelationship = async (
 
 export const getAllUsers = async (accessToken: string): Promise<User[]> => {
   const response = await getUsers(accessToken);
-  return dbResponseToUsers(response.Items);
+  return response.Items as User[];
 };

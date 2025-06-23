@@ -1,24 +1,24 @@
-@import '../../../App';
+@use '../../../App.scss';
 
 footer {
-    margin: 0;
-    background-color: $dark-background;
-    flex-shrink: 0;
+  margin: 0;
+  background-color: App.$dark-background;
+  flex-shrink: 0;
 
-    .footer-menu {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
+  .footer-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 
-        a {
-            color: $sub-heading-text;
-            text-decoration: none;
-            padding: 1em;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
+    a {
+      color: App.$sub-heading-text;
+      text-decoration: none;
+      padding: 1em;
     }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  }
 }

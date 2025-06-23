@@ -1,105 +1,36 @@
-import React, { createContext, useState } from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
-import {
-  GoogleLoginResponse,
-  GoogleLoginResponseOffline,
-  useGoogleLogin,
-} from 'react-google-login';
-import { Home } from './views/home/home-route';
-import { HeaderMenu } from './views/shared/menu/header-menu';
-import { Privacy } from './views/privacy/privacy';
-import Footer from './views/shared/footer/footer';
-import ImportPage from './views/import/import-page';
-import AboutPage from './views/about/about-page';
-import CreateRecipePage from './views/create/create-recipe-page';
-import ProtectedRoute from './views/shared/auth/protected-route';
-import RecipeDetailPageContainer from './views/detail/recipe-detail-page-container';
-import RecipeBookContainer from './views/recipe/recipe-book-container';
-import Contact from './views/contact/contact';
-import CommunityPage from './views/community/community';
-import { clientId } from './utils/constants';
-import './App.scss';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { useState } from 'react';
+
+import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { RecipeBookViewMode, RecipeViewMode } from './models/interfaces';
-import { Dimmer, Loader } from 'semantic-ui-react';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 
-interface AuthProps {
-  googleId: string;
-  googleAuth: string;
-  isSignedIn: boolean;
-  redirectUrl: string | undefined;
-  signIn: (res: GoogleLoginResponse | GoogleLoginResponseOffline) => void;
-  setRedirectUrl: (url: string | undefined) => void;
+import { LoadingOverlay } from '@mantine/core';
+
+import { AuthProvider } from './context/auth-context.tsx';
+import { RecipeContextProvider } from './context/recipe-context.tsx';
+import { queryClient } from './state/query-client.ts';
+import AboutPage from './views/about/about-page.tsx';
+import Contact from './views/contact/contact.tsx';
+import CreateRecipePage from './views/create/create-recipe-page.tsx';
+import RecipeDetailPageContainer from './views/detail/recipe-detail-page-container.tsx';
+import { Home } from './views/home/home-route.tsx';
+import ImportPage from './views/import/import-page.tsx';
+import { Privacy } from './views/privacy/privacy.tsx';
+import RecipeBookContainer from './views/recipe/recipe-book-container.tsx';
+import ProtectedRoute from './views/shared/auth/protected-route.tsx';
+import Footer from './views/shared/footer/footer.tsx';
+import { HeaderMenu } from './views/shared/menu/header-menu.tsx';
+
+import './App.scss';
+
+function CommunityPage() {
+  return null;
 }
 
-interface RecipeContextProps {
-  recipeViewMode: RecipeViewMode;
-  recipeBookViewMode: RecipeBookViewMode;
-  showLoading: string | null;
-  setRecipeViewMode: (m: RecipeViewMode) => void;
-  setRecipeBookViewMode: (m: RecipeBookViewMode) => void;
-  setShowLoading: (m: string | null) => void;
-}
+function App() {
+  const [showLoading, setShowLoading] = useState<boolean>(false);
 
-export const RecipeContext = createContext<RecipeContextProps>({
-  recipeViewMode: 'default',
-  recipeBookViewMode: 'default',
-  showLoading: null,
-  setRecipeViewMode: () => {},
-  setRecipeBookViewMode: () => {},
-  setShowLoading: () => {},
-});
-
-export const AuthContext = createContext<AuthProps>({
-  googleAuth: '',
-  googleId: '',
-  isSignedIn: false,
-  redirectUrl: undefined,
-  signIn: (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {},
-  setRedirectUrl: () => {},
-});
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000,
-    },
-  },
-});
-
-export default function App() {
-  const [googleId, setGoogleId] = useState('');
-  const [googleAuth, setGoogleAuth] = useState('');
-  const [isSignedIn, setIsSignedIn] = useState(false);
-  const [redirectUrl, setRedirectUrl] = useState<string | undefined>(undefined);
-  const [recipeViewMode, setRecipeViewMode] =
-    useState<RecipeViewMode>('default');
-  const [recipeBookViewMode, setRecipeBookViewMode] =
-    useState<RecipeBookViewMode>('default');
-  const [showLoading, setShowLoading] = useState<string | null>(null);
-
-  const onSuccess = (res: GoogleLoginResponse | GoogleLoginResponseOffline) => {
-    const response: GoogleLoginResponse = res as GoogleLoginResponse;
-    setGoogleId(response.googleId);
-    setGoogleAuth(response.tokenId);
-    setIsSignedIn(true);
-  };
-
-  const onFailure = () => {
-    console.log('user is not logged in');
-    setIsSignedIn(false);
-  };
-
-  useGoogleLogin({
-    onSuccess,
-    onFailure,
-    clientId,
-    isSignedIn: true,
-    accessType: 'online',
-  });
-
-  let routes = (
+  const routes = (
     <div className="app">
       <Routes>
         <Route path="/" element={<Home />} />
@@ -158,41 +89,31 @@ export default function App() {
     </div>
   );
 
+  console.log('showLoading', showLoading);
+
   return (
-    <HashRouter>
-      <AuthContext.Provider
-        value={{
-          googleAuth,
-          googleId,
-          isSignedIn,
-          redirectUrl,
-          signIn: onSuccess,
-          setRedirectUrl,
-        }}
+    <AuthProvider>
+      <RecipeContextProvider
+        showLoading={showLoading}
+        setShowLoading={setShowLoading}
       >
-        <RecipeContext.Provider
-          value={{
-            recipeViewMode,
-            recipeBookViewMode,
-            showLoading,
-            setRecipeViewMode,
-            setRecipeBookViewMode,
-            setShowLoading,
-          }}
-        >
+        <HashRouter>
           <QueryClientProvider client={queryClient}>
             <div className="app-wrapper">
-              <Dimmer active={!!showLoading}>
-                <Loader>{showLoading}</Loader>
-              </Dimmer>
+              <LoadingOverlay
+                visible={showLoading}
+                loaderProps={{ children: 'Loading...' }}
+              />
               <HeaderMenu />
               {routes}
               <Footer />
             </div>
             <ReactQueryDevtools initialIsOpen={false} />
           </QueryClientProvider>
-        </RecipeContext.Provider>
-      </AuthContext.Provider>
-    </HashRouter>
+        </HashRouter>
+      </RecipeContextProvider>
+    </AuthProvider>
   );
 }
+
+export default App;

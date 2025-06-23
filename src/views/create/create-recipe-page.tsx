@@ -1,20 +1,22 @@
-import React, { useContext } from 'react';
-import { Button, Form } from 'semantic-ui-react';
-import { useForm, Controller } from 'react-hook-form';
-import { ErrorMessage } from '@hookform/error-message';
-import TimeDurationInput from './time-duration-input';
-import MultiTextInput from '../shared/input/multi-text-input';
-import { useStore, useDispatch } from '../../utils/hooks/useStore';
-import { setImportedRecipe } from '../../state/actions';
+import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import './create-recipe.scss';
-import { Origin, Recipe } from '../../models/interfaces';
+
+import { ErrorMessage } from '@hookform/error-message';
+import { Button } from '@mantine/core';
+
 import { postNewRecipe, updateRecipe } from '../../aws/dynamo-facade';
-import { AuthContext } from '../../App';
+import { useAuthContext } from '../../context/auth-context.tsx';
+import { useDispatch, useStore } from '../../hooks/useStore';
+import type { Origin, Recipe } from '../../models/interfaces';
+import { setImportedRecipe } from '../../state/actions';
+import MultiTextInput from '../shared/input/multi-text-input';
+import TimeDurationInput from './time-duration-input';
+
+import './create-recipe.scss';
 
 export default function CreateRecipePage() {
   const { importedRecipe: recipe } = useStore();
-  const { googleId, googleAuth } = useContext(AuthContext);
+  const { googleId, googleAuth } = useAuthContext();
   const defaultValues = recipe
     ? {
         recipeName: recipe.recipeName,
@@ -33,7 +35,11 @@ export default function CreateRecipePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { handleSubmit, register, errors, control } = useForm({
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
     defaultValues,
   });
 
@@ -78,13 +84,12 @@ export default function CreateRecipePage() {
   return (
     <div className="container create-recipe-container">
       <h2>Create a New Recipe</h2>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="row">
-          <Form.Field className="col-md-6 col-sm-12">
+          <div className="col-md-6 col-sm-12">
             <label>Recipe Name</label>
             <input
-              name="recipeName"
-              ref={register({
+              {...register('recipeName', {
                 required: true,
               })}
             />
@@ -95,45 +100,43 @@ export default function CreateRecipePage() {
               name="recipeName"
               message="This is required."
             />
-          </Form.Field>
-          <Form.Field className="col-md-6 col-sm-12">
+          </div>
+          <div className="col-md-6 col-sm-12">
             <label>Author Name</label>
-            <input name="authorName" ref={register} />
-          </Form.Field>
+            <input {...register('authorName')} />
+          </div>
         </div>
         <div className="row">
-          <Form.Field className="col-md-8 col-sm-12">
+          <div className="col-md-8 col-sm-12">
             <label>URL</label>
-            <input name="url" ref={register} />
-          </Form.Field>
-          <Form.Field className="col-md-4 col-sm-12">
+            <input {...register('url')} />
+          </div>
+          <div className="col-md-4 col-sm-12">
             <label>Website</label>
-            <input name="website" ref={register} />
-          </Form.Field>
+            <input {...register('website')} />
+          </div>
         </div>
         <div className="row">
-          <Form.Field className="col-md-8 col-sm-12">
+          <div className="col-md-8 col-sm-12">
             <label>Image Link</label>
-            <input name="image" ref={register} />
-          </Form.Field>
-          <Form.Field className="col-md-4 col-sm-12">
+            <input {...register('image')} />
+          </div>
+          <div className="col-md-4 col-sm-12">
             <label>Tags</label>
-            {/* @ts-ignore */}
             <Controller
-              as={MultiTextInput}
+              render={({ field }) => (
+                <MultiTextInput tags={recipe?.tags || []} {...field} />
+              )}
               name="tags"
-              control={control}
               defaultValue={[]}
-              tags={recipe?.tags || []}
             />
-          </Form.Field>
+          </div>
         </div>
         <div className="row">
-          <Form.Field className="col-md-4 col-sm-12">
+          <div className="col-md-4 col-sm-12">
             <label>Servings</label>
             <input
-              name="servings"
-              ref={register({
+              {...register('servings', {
                 required: true,
               })}
             />
@@ -144,36 +147,41 @@ export default function CreateRecipePage() {
               name="servings"
               message="This is required"
             />
-          </Form.Field>
-          <Form.Field className="col-md-4 col-sm-12">
+          </div>
+          <div className="col-md-4 col-sm-12">
             <label>Active Time</label>
-            {/* @ts-ignore */}
             <Controller
-              as={TimeDurationInput}
+              render={({ field }) => (
+                <TimeDurationInput
+                  {...field}
+                  name="activeTimeMinutes"
+                  minutes={recipe?.activeTimeMinutes || 0}
+                />
+              )}
               name="activeTimeMinutes"
-              control={control}
               defaultValue={recipe?.activeTimeMinutes || 0}
-              minutes={recipe?.activeTimeMinutes || 0}
             />
-          </Form.Field>
-          <Form.Field className="col-md-4 col-sm-12">
+          </div>
+          <div className="col-md-4 col-sm-12">
             <label>Total Time</label>
-            {/* @ts-ignore */}
             <Controller
-              as={TimeDurationInput}
+              render={({ field }) => (
+                <TimeDurationInput
+                  {...field}
+                  name="activeTimeMinutes"
+                  minutes={recipe?.totalTimeMinutes || 0}
+                />
+              )}
               name="totalTimeMinutes"
-              control={control}
               defaultValue={recipe?.totalTimeMinutes || 0}
-              minutes={recipe?.totalTimeMinutes || 0}
             />
-          </Form.Field>
+          </div>
         </div>
 
-        <Form.Field>
+        <div>
           <label>Ingredients</label>
           <textarea
-            name="ingredients"
-            ref={register({
+            {...register('ingredients', {
               required: true,
             })}
           />
@@ -184,12 +192,11 @@ export default function CreateRecipePage() {
             name="ingredients"
             message="This is required"
           />
-        </Form.Field>
-        <Form.Field>
+        </div>
+        <div>
           <label>Steps</label>
           <textarea
-            name="steps"
-            ref={register({
+            {...register('steps', {
               required: true,
             })}
           />
@@ -200,15 +207,15 @@ export default function CreateRecipePage() {
             name="steps"
             message="This is required"
           />
-        </Form.Field>
-        <Form.Field>
+        </div>
+        <div>
           <label>Notes</label>
-          <textarea name="notes" ref={register} />
-        </Form.Field>
-        <Button primary type="submit" className="submit-button">
+          <textarea {...register('notes')} />
+        </div>
+        <Button type="submit" className="submit-button">
           Save Recipe
         </Button>
-      </Form>
+      </form>
     </div>
   );
 }

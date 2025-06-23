@@ -1,18 +1,11 @@
-import React, { useContext } from 'react';
-import { Checkbox, Popup } from 'semantic-ui-react';
+import { Switch } from '@mantine/core';
+
+import { useRecipeContext } from '../../context/recipe-context.tsx';
+
 import './recipe-detail.scss';
-import { CheckboxProps } from 'semantic-ui-react/dist/commonjs/modules/Checkbox/Checkbox';
-import { RecipeContext } from '../../App';
 
 export default function RecipeViewModeToggle() {
-  const { recipeViewMode, setRecipeViewMode } = useContext(RecipeContext);
-
-  const onChange = (
-    event: React.FormEvent<HTMLInputElement>,
-    d: CheckboxProps
-  ) => {
-    setRecipeViewMode(d.checked ? 'index' : 'default');
-  };
+  const { recipeViewMode, setRecipeViewMode } = useRecipeContext();
 
   const text =
     recipeViewMode === 'default'
@@ -21,15 +14,12 @@ export default function RecipeViewModeToggle() {
 
   return (
     <div className="recipe-view-toggle">
-      <Popup
-        content={text}
-        trigger={
-          <Checkbox
-            toggle
-            onChange={onChange}
-            checked={recipeViewMode === 'index'}
-          />
-        }
+      <Switch
+        onChange={(e) => {
+          setRecipeViewMode(e.currentTarget.checked ? 'index' : 'default');
+        }}
+        checked={recipeViewMode === 'index'}
+        label={text}
       />
     </div>
   );
