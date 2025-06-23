@@ -1,37 +1,38 @@
 .recipe-card-wrapper {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
 }
 
 .ui.card,
 .ui.card:first-child,
 .ui.card:last-child {
-    margin: 1em;
+  margin: 1em;
 }
 
 .filter-section {
-    margin: 1em;
-    display: flex;
-    justify-content: center;
+  margin: 1em;
+  display: flex;
+  justify-content: center;
+  gap: 3em;
 
-    div {
-        max-width: 400px;
-    }
+  div {
+    max-width: 400px;
+  }
 }
 
 .recipe-card-img {
-    object-fit: cover;
+  object-fit: cover;
 }
 
 .book-view-toggle {
-    display: flex;
-    top: 0 !important;
-    left: 0 !important;
+  display: flex;
+  top: 0 !important;
+  left: 0 !important;
 }
 
 .card-image-link {
-    height: 300px;
+  height: 300px;
 }

@@ -1,157 +1,172 @@
-import { config, DynamoDB, WebIdentityCredentials } from 'aws-sdk';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { fromWebToken } from '@aws-sdk/credential-providers';
 import {
-  DBBatchItem,
-  DBDeleteItem,
-  DBGetItem,
-  DBPutItem,
-  DBQuery,
-  DBScan,
-} from './dynamo-types';
-import { Recipe } from '../models/interfaces';
-import { recipeToDbParams } from './dynamo-utils';
+  BatchGetCommand,
+  type BatchGetCommandOutput,
+  DeleteCommand,
+  type DeleteCommandOutput,
+  GetCommand,
+  type GetCommandOutput,
+  PutCommand,
+  type PutCommandOutput,
+  QueryCommand,
+  type QueryCommandOutput,
+  ScanCommand,
+  type ScanCommandOutput,
+} from '@aws-sdk/lib-dynamodb';
+import { marshall } from '@aws-sdk/util-dynamodb';
+
+import type { Recipe } from '../models/interfaces';
 
 /*** Setup ***/
 
-export const setupAuth = async (accessToken: string): Promise<DynamoDB> => {
-  config.update({
+let db: DynamoDBClient | null = null;
+
+export const setupAuth = async (
+  accessToken: string
+): Promise<DynamoDBClient> => {
+  if (db) {
+    console.log('client already initialized');
+    return db;
+  }
+
+  const credentials = fromWebToken({
+    roleArn: 'arn:aws:iam::809097150636:role/recipeBook-user',
+    roleSessionName: 'web',
+    webIdentityToken: accessToken,
+  });
+
+  try {
+    await credentials();
+    console.log('Logged into application as administrator');
+  } catch (err) {
+    console.error('Error logging into application', err);
+  }
+
+  db = new DynamoDBClient({
     region: 'us-east-2',
-  });
-  const credentials = new WebIdentityCredentials({
-    RoleArn: 'arn:aws:iam::809097150636:role/recipeBook-user',
-    RoleSessionName: 'web',
-    WebIdentityToken: accessToken,
+    credentials,
   });
 
-  credentials.refresh(function (err) {
-    if (err) {
-      console.log('Error logging into application');
-    } else {
-      console.log('Logged into application as administrator');
-    }
-  });
-
-  return new DynamoDB({
-    apiVersion: '2012-08-10',
-    credentials: credentials,
-  });
+  return db;
 };
 
 /*** CRUD ***/
 export const getRecipeIdsByUser = async (
   userId: string,
   accessToken: string
-): Promise<DBQuery> => {
+): Promise<QueryCommandOutput> => {
   const db = await setupAuth(accessToken);
   const getRecipeIdParams = {
-    ExpressionAttributeValues: {
-      ':id': {
-        S: userId,
-      },
-    },
-    KeyConditionExpression: 'userId = :id',
-    ProjectionExpression: 'userId, recipeId',
     TableName: 'recipeBook-userRecipePair',
+    KeyConditionExpression: 'userId = :id',
+    ExpressionAttributeValues: {
+      ':id': userId,
+    },
+    ProjectionExpression: 'userId, recipeId',
   };
 
-  return db.query(getRecipeIdParams).promise();
+  try {
+    console.log('trying the query');
+    return await db.send(new QueryCommand(getRecipeIdParams));
+  } catch (error) {
+    console.error('Error querying recipe IDs:', error);
+    throw error;
+  }
 };
 
 export const getRecipesByIdList = async (
   idList: string[],
   accessToken: string
-): Promise<DBBatchItem> => {
+): Promise<BatchGetCommandOutput> => {
   const db = await setupAuth(accessToken);
+
   const getRecipesParams = {
     RequestItems: {
       'recipeBook-recipe': {
-        Keys: idList.map((r) => {
-          return {
-            recipeId: {
-              S: r,
-            },
-          };
-        }),
+        Keys: idList.map((r) => ({
+          recipeId: r,
+        })),
       },
     },
   };
 
-  return db.batchGetItem(getRecipesParams).promise();
+  try {
+    return await db.send(new BatchGetCommand(getRecipesParams));
+  } catch (error) {
+    console.error('Error fetching recipes by ID list:', error);
+    throw error;
+  }
 };
 
 export const getRecipeById = async (
   recipeId: string,
   accessToken: string
-): Promise<DBGetItem> => {
+): Promise<GetCommandOutput> => {
   const db = await setupAuth(accessToken);
   const getRecipeIdParams = {
-    Key: {
-      recipeId: {
-        S: recipeId,
-      },
-    },
     TableName: 'recipeBook-recipe',
+    Key: {
+      recipeId: recipeId,
+    },
   };
 
-  return db.getItem(getRecipeIdParams).promise();
+  return db.send(new GetCommand(getRecipeIdParams));
 };
 
 export const postRecipe = async (
   recipe: Recipe,
   accessToken: string
-): Promise<DBPutItem> => {
+): Promise<PutCommandOutput> => {
   const db = await setupAuth(accessToken);
   const putRecipeParams = {
     TableName: 'recipeBook-recipe',
-    Item: recipeToDbParams(recipe),
+    Item: marshall(recipe),
   };
 
-  return db.putItem(putRecipeParams).promise();
+  return db.send(new PutCommand(putRecipeParams));
 };
 
 export const postRecipeUserRelationship = async (
   recipeIds: string[],
   userId: string,
   accessToken: string
-): Promise<DBPutItem> => {
+): Promise<PutCommandOutput> => {
   const db = await setupAuth(accessToken);
   const putUserParams = {
     TableName: 'recipeBook-userRecipePair',
     Item: {
-      userId: {
-        S: userId,
-      },
-      recipeId: {
-        SS: recipeIds,
-      },
+      userId: userId,
+      recipeId: recipeIds,
     },
   };
 
-  return db.putItem(putUserParams).promise();
+  return db.send(new PutCommand(putUserParams));
 };
 
 export const deleteRecipeActual = async (
   recipeId: string,
   accessToken: string
-): Promise<DBDeleteItem> => {
+): Promise<DeleteCommandOutput> => {
   const db = await setupAuth(accessToken);
   const deleteRecipeParams = {
     TableName: 'recipeBook-recipe',
     Key: {
-      recipeId: {
-        S: recipeId,
-      },
+      recipeId: recipeId,
     },
   };
 
-  return db.deleteItem(deleteRecipeParams).promise();
+  return db.send(new DeleteCommand(deleteRecipeParams));
 };
 
-export const getUsers = async (accessToken: string): Promise<DBScan> => {
+export const getUsers = async (
+  accessToken: string
+): Promise<ScanCommandOutput> => {
   const db = await setupAuth(accessToken);
   const params = {
     TableName: 'recipeBook-user',
-    Select: 'ALL_ATTRIBUTES',
+    Select: 'ALL_ATTRIBUTES' as const,
   };
 
-  return db.scan(params).promise();
+  return db.send(new ScanCommand(params));
 };

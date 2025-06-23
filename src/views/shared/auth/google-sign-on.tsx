@@ -1,29 +1,28 @@
-import React, { useContext } from 'react';
-import { useGoogleLogin } from 'react-google-login';
-import { Button } from 'semantic-ui-react';
+import { useGoogleOneTapLogin } from '@react-oauth/google';
+
+import { useAuthContext } from '../../../context/auth-context.tsx';
+
 import './auth.scss';
-import { clientId } from '../../../utils/constants';
-import { AuthContext } from '../../../App';
 
 export function GoogleSignOn() {
-  const { redirectUrl, signIn: onSuccess } = useContext(AuthContext);
+  const { isSignedIn, signIn } = useAuthContext();
 
-  const onFailure = () => {
-    console.log('user is not logged in');
-  };
-
-  const { signIn } = useGoogleLogin({
-    onSuccess,
-    onFailure,
-    clientId,
-    isSignedIn: true,
-    accessType: 'online',
-    redirectUri: redirectUrl,
+  useGoogleOneTapLogin({
+    auto_select: true,
+    onSuccess: (response) => {
+      signIn(response);
+    },
+    onError: () => {
+      console.error('One Tap login failed');
+    },
+    promptMomentNotification: (notification) => {
+      console.log('One Tap prompt status:', notification);
+    },
   });
 
   return (
-    <Button color="grey" onClick={signIn}>
-      Login With Google
-    </Button>
+    <div>
+      {isSignedIn ? <p>You are logged in</p> : <p>Waiting for One Tap</p>}
+    </div>
   );
 }

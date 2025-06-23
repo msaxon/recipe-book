@@ -1,25 +1,25 @@
-@import "../../App.scss";
+@use '../../App.scss';
 
 .home-card {
-    max-width: 200px;
-    padding: 2em 4em 5em 4em;
-    background-color: $content-background;
-    border-radius: 25px;
+  max-width: 200px;
+  padding: 2em 4em 5em 4em;
+  background-color: App.$content-background;
+  border-radius: 25px;
 }
 
 .home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .text-container {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    flex-direction: row;
 
-    .text-container {
-        display: flex;
-        flex-direction: row;
-
-        .text-area {
-            width: 33%;
-            padding: 1em;
-        }
+    .text-area {
+      width: 33%;
+      padding: 1em;
     }
+  }
 }

@@ -1,20 +1,20 @@
-import React, { useContext } from 'react';
-import RecipeDetailPage from './recipe-detail-page';
-import RecipeDetailIndexCard from './recipe-detail-index-card';
-import { useStore } from '../../utils/hooks/useStore';
-import useSearchQuery from '../../utils/hooks/useSearchQuery';
-import { getAllUserRecipes, getSingleRecipe } from '../../aws/dynamo-facade';
 import { useQuery } from 'react-query';
+
+import { getAllUserRecipes, getSingleRecipe } from '../../aws/dynamo-facade';
+import { useAuthContext } from '../../context/auth-context.tsx';
+import { useRecipeContext } from '../../context/recipe-context.tsx';
+import useSearchQuery from '../../hooks/useSearchQuery';
 import {
   GET_RECIPE_BY_ID,
   GET_RECIPE_IDS_BY_USER,
 } from '../../utils/constants';
 import AsyncLoader from '../shared/interstitial/async-loader';
-import { AuthContext, RecipeContext } from '../../App';
+import RecipeDetailIndexCard from './recipe-detail-index-card';
+import RecipeDetailPage from './recipe-detail-page';
 
 export default function RecipeDetailPageContainer() {
-  const { recipeViewMode } = useContext(RecipeContext);
-  const { googleAuth, googleId: userId } = useContext(AuthContext);
+  const { recipeViewMode } = useRecipeContext();
+  const { googleAuth, googleId: userId } = useAuthContext();
   const recipeId = useSearchQuery().get('recipeId');
 
   const {
@@ -37,7 +37,7 @@ export default function RecipeDetailPageContainer() {
     getAllUserRecipes(userId, googleAuth)
   );
 
-  if (recipeLoading || recipeLoading) {
+  if (recipeLoading || recipesLoading) {
     return <AsyncLoader />;
   } else if (recipeError || recipesError || !recipe) {
     return <p>An error occurred loading the recipe.</p>;

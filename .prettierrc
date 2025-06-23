@@ -9,5 +9,14 @@
   "bracketSpacing": true,
   "bracketSameLine": false,
   "importOrderSeparation": true,
-  "importOrder": ["^react(-dom)?$", "^([^.@])", "^[./]"]
+  "plugins": ["@trivago/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^react?$",
+    "^react-.*$",
+    "^[a-z@]",
+    "^[./](?!.*\\.(css|scss|sass)$)",
+    ".*\\.(css|scss|sass)$",
+    ".*"
+  ],
+  "importOrderSortSpecifiers": true
 }

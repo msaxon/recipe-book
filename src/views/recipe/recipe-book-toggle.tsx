@@ -1,20 +1,11 @@
-import React, { useContext } from 'react';
-import { Checkbox, Popup } from 'semantic-ui-react';
+import { Switch } from '@mantine/core';
+
+import { useRecipeContext } from '../../context/recipe-context.tsx';
+
 import './recipe-book-page.scss';
-import { CheckboxProps } from 'semantic-ui-react/dist/commonjs/modules/Checkbox/Checkbox';
-import { RecipeContext } from '../../App';
 
 export default function RecipeBookViewModeToggle() {
-  const { recipeBookViewMode, setRecipeBookViewMode } =
-    useContext(RecipeContext);
-
-  const onChange = (
-    event: React.FormEvent<HTMLInputElement>,
-    d: CheckboxProps
-  ) => {
-    console.log('toggling', d.checked ? 'minimal' : 'default');
-    setRecipeBookViewMode(d.checked ? 'minimal' : 'default');
-  };
+  const { recipeBookViewMode, setRecipeBookViewMode } = useRecipeContext();
 
   const text =
     recipeBookViewMode === 'default'
@@ -23,15 +14,15 @@ export default function RecipeBookViewModeToggle() {
 
   return (
     <div className="book-view-toggle">
-      <Popup
-        content={text}
-        trigger={
-          <Checkbox
-            toggle
-            onChange={onChange}
-            checked={recipeBookViewMode === 'minimal'}
-          />
-        }
+      <Switch
+        checked={recipeBookViewMode === 'minimal'}
+        onChange={(event) => {
+          console.log(event.currentTarget.checked);
+          setRecipeBookViewMode(
+            event.currentTarget.checked ? 'minimal' : 'default'
+          );
+        }}
+        label={text}
       />
     </div>
   );

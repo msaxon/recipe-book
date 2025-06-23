@@ -1,6 +1,7 @@
-import { useReducer, createContext } from 'react';
-import { SET_IMPORTED_RECIPE, REMOVE_IMPORTED_RECIPE } from './action-types';
-import {
+import { createContext, useReducer } from 'react';
+
+import { REMOVE_IMPORTED_RECIPE, SET_IMPORTED_RECIPE } from './action-types';
+import type {
   IAction,
   IStore,
   IStoreProviderProps,
@@ -43,7 +44,6 @@ const reducer = (state: IStore, action: IAction) => {
 };
 
 export function StoreProvider({ children }: IStoreProviderProps) {
-  // @ts-ignore
   const [state, dispatch] = useReducer(reducer, initialState);
   const value: IStoreValue = {
     state,
@@ -51,6 +51,5 @@ export function StoreProvider({ children }: IStoreProviderProps) {
   };
 
   // prettier-ignore
-  // @ts-ignore
   return (<Store.Provider value={value}>{children}</Store.Provider>);
 }

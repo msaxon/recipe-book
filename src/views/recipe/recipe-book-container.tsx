@@ -1,25 +1,30 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Dropdown, Input } from 'semantic-ui-react';
-import MultiTextInput from '../shared/input/multi-text-input';
-import RecipeBookViewModeToggle from './recipe-book-toggle';
-import RecipeBookPage from './recipe-book-page';
-import { firstContainsAllOfSecond } from '../../utils/array-utils';
-import RecipeBookMinimal from './recipe-book-minimal';
-import useSearchQuery from '../../utils/hooks/useSearchQuery';
-import { getAllUserRecipes } from '../../aws/dynamo-facade';
-import { Recipe } from '../../models/interfaces';
-import './recipe-book-page.scss';
+import { useEffect, useState } from 'react';
+
 import { useQuery } from 'react-query';
+
+import { InputLabel, Select, TextInput } from '@mantine/core';
+import FeatherIcon from 'feather-icons-react';
+
+import { getAllUserRecipes } from '../../aws/dynamo-facade';
+import { useAuthContext } from '../../context/auth-context.tsx';
+import { useRecipeContext } from '../../context/recipe-context.tsx';
+import useSearchQuery from '../../hooks/useSearchQuery';
+import type { Recipe } from '../../models/interfaces';
+import { firstContainsAllOfSecond } from '../../utils/array-utils';
 import { GET_RECIPE_IDS_BY_USER } from '../../utils/constants';
-import { AuthContext, RecipeContext } from '../../App';
+import MultiTextInput from '../shared/input/multi-text-input';
+import RecipeBookMinimal from './recipe-book-minimal';
+import RecipeBookPage from './recipe-book-page';
+
+import './recipe-book-page.scss';
 
 export default function RecipeBookContainer() {
   const [tags, setTags] = useState([]);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('recipeName_asc');
-  let { googleId: userId } = useContext(AuthContext);
-  const { googleAuth } = useContext(AuthContext);
-  const { recipeBookViewMode, setShowLoading } = useContext(RecipeContext);
+  // eslint-disable-next-line prefer-const
+  let { googleId: userId, googleAuth } = useAuthContext();
+  const { recipeBookViewMode, setShowLoading } = useRecipeContext();
   const userIdFromQueryString = useSearchQuery().get('userId');
 
   if (userIdFromQueryString) {
@@ -35,78 +40,71 @@ export default function RecipeBookContainer() {
   );
 
   useEffect(() => {
-    setShowLoading(isLoading ? 'Fetching Recipes' : null);
+    setShowLoading(isLoading);
   }, [isLoading]);
+
+  const sortRecipes = (recipes: Recipe[]) => {
+    const lowerSearch = search.toLowerCase();
+
+    const filteredRecipes = recipes.filter((recipe) => {
+      const matchesTags = firstContainsAllOfSecond(recipe.tags || [], tags);
+
+      const matchesSearch =
+        (recipe.recipeName &&
+          recipe.recipeName.toLowerCase().includes(lowerSearch)) ||
+        (recipe.notes && recipe.notes.toLowerCase().includes(lowerSearch)) ||
+        (typeof recipe.steps === 'string' &&
+          recipe.steps.toLowerCase().includes(lowerSearch)) ||
+        (typeof recipe.ingredients === 'string' &&
+          recipe.ingredients.toLowerCase().includes(lowerSearch));
+
+      return matchesTags && matchesSearch;
+    });
+
+    const sortFunc = sortOptions.find((s) => s.value === sort);
+    return sortFunc
+      ? [...filteredRecipes].sort(sortFunc.func) // spread to avoid mutating original
+      : filteredRecipes;
+  };
 
   const sortOptions = [
     {
-      key: 'recipeName_asc',
       value: 'recipeName_asc',
-      text: 'Recipe Name: Asc',
+      label: 'Recipe Name: Asc',
       func: (a: Recipe, b: Recipe) =>
         a.recipeName.toLowerCase().localeCompare(b.recipeName.toLowerCase()),
     },
     {
-      key: 'recipeName_desc',
       value: 'recipeName_desc',
-      text: 'Recipe Name: Desc',
+      label: 'Recipe Name: Desc',
       func: (a: Recipe, b: Recipe) =>
         b.recipeName.toLowerCase().localeCompare(a.recipeName.toLowerCase()),
     },
     {
-      key: 'activeTimeMinutes_lth',
       value: 'activeTimeMinutes_lth',
-      text: 'Active Time: Low to High',
+      label: 'Active Time: Low to High',
       func: (a: Recipe, b: Recipe) =>
         (a.activeTimeMinutes || 0) - (b.activeTimeMinutes || 0),
     },
     {
-      key: 'activeTimeMinutes_htl',
       value: 'activeTimeMinutes_htl',
-      text: 'Active Time: High to Low',
+      label: 'Active Time: High to Low',
       func: (a: Recipe, b: Recipe) =>
         (b.activeTimeMinutes || 0) - (a.activeTimeMinutes || 0),
     },
     {
-      key: 'totalTimeMinutes_lth',
       value: 'totalTimeMinutes_lth',
-      text: 'Total Time: Low to High',
+      label: 'Total Time: Low to High',
       func: (a: Recipe, b: Recipe) =>
         (a.totalTimeMinutes || 0) - (b.totalTimeMinutes || 0),
     },
     {
-      key: 'totalTimeMinutes_htl',
       value: 'totalTimeMinutes_htl',
-      text: 'Total Time: High to Low',
+      label: 'Total Time: High to Low',
       func: (a: Recipe, b: Recipe) =>
         (b.totalTimeMinutes || 0) - (a.totalTimeMinutes || 0),
     },
   ];
-
-  const sortRecipes = (recipes: Recipe[]) => {
-    //tags
-    const taggedRecipes = recipes.filter((recipe) =>
-      firstContainsAllOfSecond(recipe.tags || [], tags)
-    );
-
-    //search
-    const searchedRecipes = taggedRecipes.filter((recipe) => {
-      return (
-        (recipe.recipeName &&
-          recipe.recipeName.toLowerCase().includes(search.toLowerCase())) ||
-        (recipe.notes &&
-          recipe.notes.toLowerCase().includes(search.toLowerCase())) ||
-        (recipe.steps &&
-          recipe.steps.toLowerCase().includes(search.toLowerCase())) ||
-        (recipe.ingredients &&
-          recipe.ingredients.toLowerCase().includes(search.toLowerCase()))
-      );
-    });
-
-    //sort
-    const sortFunc = sortOptions.find((s) => s.key === sort);
-    return sortFunc ? searchedRecipes.sort(sortFunc.func) : searchedRecipes;
-  };
 
   if (isLoading) {
     return <></>;
@@ -118,29 +116,26 @@ export default function RecipeBookContainer() {
     return (
       <div>
         <div className="row filter-section">
-          <div className="col-12 col-lg-1">
-            <RecipeBookViewModeToggle />
-          </div>
           <div className="col-12 col-lg-3">
-            <Input
-              icon="search"
-              fluid
-              placeholder="Search..."
+            <TextInput
+              leftSection={<FeatherIcon icon="search" />}
+              label="Search"
+              // placeholder="Search..."
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <div className="col-12 col-lg-4">
-            <Dropdown
+            <Select
               placeholder="Sort By"
-              fluid
-              search
-              selection
-              options={sortOptions}
-              onChange={(e, d) => setSort(d.value as string)}
+              data={sortOptions.map((so) => ({
+                value: so.value,
+                label: so.label,
+              }))}
+              onChange={(_, d) => setSort(d.value as string)}
             />
           </div>
           <div className="col-12 col-lg-4">
-            {/* @ts-ignore */}
+            {/* @ts-expect-error its right i promise */}
             <MultiTextInput onChange={setTags} />
           </div>
           {userIdFromQueryString ? <p>Viewing Someone Else's Recipes</p> : null}
@@ -152,29 +147,25 @@ export default function RecipeBookContainer() {
     return (
       <div>
         <div className="row filter-section">
-          <div className="col-12 col-lg-1">
-            <RecipeBookViewModeToggle />
-          </div>
           <div className="col-12 col-lg-4">
-            <Input
-              icon="search"
-              fluid
+            <TextInput
+              leftSection={<FeatherIcon icon="search" />}
               placeholder="Search..."
+              label="Search"
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <div className="col-12 col-lg-3">
-            <Dropdown
+            <Select
               placeholder="Sort By"
-              fluid
-              search
-              selection
-              options={sortOptions}
-              onChange={(e, d) => setSort(d.value as string)}
+              data={sortOptions}
+              label="Sort By"
+              onChange={(_, d) => setSort(d.value as string)}
             />
           </div>
           <div className="col-12 col-lg-4">
-            {/* @ts-ignore */}
+            <InputLabel>Tags</InputLabel>
+            {/* @ts-expect-error its the right type i promise */}
             <MultiTextInput onChange={setTags} />
           </div>
         </div>

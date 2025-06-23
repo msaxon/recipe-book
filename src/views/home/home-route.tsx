@@ -1,16 +1,10 @@
-import React, { useContext } from 'react';
 import { GoogleSignOn } from '../shared/auth/google-sign-on';
+
 import './home-route.scss';
-import { AuthContext } from '../../App';
 
 export function Home() {
-  const { isSignedIn } = useContext(AuthContext);
-  const message = isSignedIn
-    ? "Welcome, you're signed in"
-    : 'Please sign in to start your recipe book.';
   return (
     <div className="home-container">
-      <p>{message}</p>
       <GoogleSignOn />
       <div className="text-container">
         <div className="text-area">

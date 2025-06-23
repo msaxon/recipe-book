@@ -1,45 +1,59 @@
-import React from 'react';
-import { Card } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { isUrl } from '../../utils/string-utils';
+
+import { Card, Container, Space, Text } from '@mantine/core';
+
+import type { Recipe } from '../../models/interfaces';
+
 import './recipe-book-page.scss';
-import {Recipe} from "../../models/interfaces";
 
 interface IProps {
-    recipe: Recipe;
+  recipe: Recipe;
 }
 
 export default function RecipeBookCard({ recipe }: IProps) {
-    const formatTags = () => {
-        if (recipe.tags && recipe.tags.length > 0) {
-            return 'Tags: ' + recipe.tags.reduce((a, b) => a + ', ' + b);
-        } else {
-            return 'Tags: none';
-        }
-    };
+  const formatTags = () => {
+    if (recipe.tags && recipe.tags.length > 0) {
+      return 'Tags: ' + recipe.tags.reduce((a, b) => a + ', ' + b);
+    } else {
+      return 'Tags: none';
+    }
+  };
 
-    const formatWebsiteLink = () => {
-        if (isUrl(recipe.origin.url)) {
-            return <a href={'https://' + new URL(recipe.origin.url).hostname}  target="_blank" rel="noopener noreferrer">{recipe.origin.website}</a>;
-        } else {
-            return <p>{recipe.origin.website}</p>;
-        }
-    };
+  return (
+    <Card
+      shadow="sm"
+      padding="lg"
+      radius="md"
+      withBorder={true}
+      styles={{
+        root: {
+          margin: '1em',
+          width: 400,
+        },
+      }}
+    >
+      <Card.Section>
+        <Link to={'/recipes/details?recipeId=' + recipe.recipeId}>
+          {recipe.image && (
+            <img
+              src={recipe.image}
+              width="100%"
+              height="250px"
+              alt=""
+              className="recipe-card-img"
+              loading="lazy"
+            />
+          )}
+        </Link>
+      </Card.Section>
 
-    return (
-        <Card>
-            <Link to={'/recipes/details?recipeId=' + recipe.recipeId} className="card-image-link">
-                <img src={recipe.image} width="100%" height="300" alt="" className="recipe-card-img" />
-            </Link>
-            <Card.Content>
-                <Card.Header>
-                    <Link to={'/recipes/details?recipeId=' + recipe.recipeId}>{recipe.recipeName}</Link>
-                </Card.Header>
-                <Card.Meta>{formatWebsiteLink()}</Card.Meta>
-            </Card.Content>
-            <Card.Content extra>
-                <p>{formatTags()}</p>
-            </Card.Content>
-        </Card>
-    );
+      <Card.Section>
+        <Container px={16} pb={8}>
+          <Text>{recipe.recipeName}</Text>
+          <Text size="xs">{recipe.origin.website}</Text>
+          <Text size="sm">{formatTags()}</Text>
+        </Container>
+      </Card.Section>
+    </Card>
+  );
 }
