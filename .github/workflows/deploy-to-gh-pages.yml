@@ -16,8 +16,8 @@ jobs:
                 node-version: '14'
             - name: Build
               run: |
-                  yarn install
-                  yarn run build
+                  bun install
+                  bun run build
             - name: Deploy
               uses: JamesIves/github-pages-deploy-action@releases/v3
               with:
