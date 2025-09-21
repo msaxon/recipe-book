@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button, TextInput } from '@mantine/core';
-import PromiseLoadingSpinner from 'promise-loading-spinner';
 
 import { importRecipe } from '../../aws/importer';
 import { useAuthContext } from '../../context/auth-context.tsx';
@@ -17,6 +16,7 @@ import './import-page.scss';
 export default function ImportPage() {
   const [url, setUrl] = useState('');
   const [importError, setImportError] = useState(null);
+
   const { googleAuth } = useAuthContext();
   const { setShowLoading } = useRecipeContext();
 
@@ -24,9 +24,7 @@ export default function ImportPage() {
 
   const navigate = useNavigate();
 
-  const loader = new PromiseLoadingSpinner();
-
-  const handleImportRecipe = loader.wrapFunction(async () => {
+  const handleImportRecipe = async () => {
     setShowLoading(true);
     const recipe = await importRecipe(url, googleAuth);
     setShowLoading(false);
@@ -36,7 +34,7 @@ export default function ImportPage() {
       dispatch(setImportedRecipe(recipe));
       navigate('/recipes/create');
     }
-  });
+  };
 
   const importErrorContainer = importError ? <p>{importError}</p> : <></>;
 
@@ -47,7 +45,7 @@ export default function ImportPage() {
         placeholder="https://www.seriouseats.com/recipes/2020/07/lamb-biryani.html"
         onChange={(e) => setUrl(e.target.value)}
       />
-      <Button content="Import" onClick={handleImportRecipe} />
+      <Button content="Import" onClick={handleImportRecipe}>Import</Button>
       {importErrorContainer}
       <div className="supported-sites">
         <h2>Supported Sites</h2>
