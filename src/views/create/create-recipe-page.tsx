@@ -2,7 +2,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { ErrorMessage } from '@hookform/error-message';
-import { Button } from '@mantine/core';
+import { Button, Input, SimpleGrid, Stack, Text, Textarea, TextInput } from '@mantine/core';
 
 import { postNewRecipe, updateRecipe } from '../../aws/dynamo-facade';
 import { useAuthContext } from '../../context/auth-context.tsx';
@@ -39,6 +39,7 @@ export default function CreateRecipePage() {
     handleSubmit,
     register,
     formState: { errors },
+    control
   } = useForm({
     defaultValues,
   });
@@ -85,11 +86,95 @@ export default function CreateRecipePage() {
     <div className="container create-recipe-container">
       <h2>Create a New Recipe</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="row">
-          <div className="col-md-6 col-sm-12">
-            <label>Recipe Name</label>
-            <input
-              {...register('recipeName', {
+        <Stack px="3rem">
+          <SimpleGrid cols={{ base: 1, md: 2 }}>
+            <div>
+              <TextInput
+                label="Recipe Name"
+                {...register('recipeName', {
+                  required: true,
+                })}
+              />
+              <ErrorMessage
+                as="p"
+                className="error-message"
+                errors={errors}
+                name="recipeName"
+                message="This is required."
+              />
+            </div>
+            <TextInput label="Author Name" {...register('authorName')} />
+          </SimpleGrid>
+          <SimpleGrid cols={{ base: 1, md: 2 }}>
+            <TextInput label="URL" {...register('url')} />
+            <TextInput label="website" {...register('website')} />
+
+            <TextInput label="Image Link" {...register('image')} />
+            <div>
+              <label>Tags</label>
+              <Controller
+                render={({ field }) => (
+                  <MultiTextInput tags={recipe?.tags || []} {...field} />
+                )}
+                name="tags"
+                defaultValue={[]}
+                control={control}
+              />
+            </div>
+          </SimpleGrid>
+          <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
+            <div>
+              <TextInput label="Servings"
+                {...register('servings', {
+                  required: true,
+                })}
+              />
+              <ErrorMessage
+                as="p"
+                className="error-message"
+                errors={errors}
+                name="servings"
+                message="This is required"
+              />
+            </div>
+            <div>
+              <label>Active Time</label>
+              <Controller
+                render={({ field }) => (
+                  <TimeDurationInput
+                    {...field}
+                    name="activeTimeMinutes"
+                    minutes={recipe?.activeTimeMinutes || 0}
+                  />
+                )}
+                name="activeTimeMinutes"
+                defaultValue={recipe?.activeTimeMinutes || 0}
+                control={control}
+              />
+            </div>
+            <div>
+              <label>Total Time</label>
+              <Controller
+                render={({ field }) => (
+                  <TimeDurationInput
+                    {...field}
+                    name="activeTimeMinutes"
+                    minutes={recipe?.totalTimeMinutes || 0}
+                  />
+                )}
+                name="totalTimeMinutes"
+                defaultValue={recipe?.totalTimeMinutes || 0}
+                control={control}
+              />
+            </div>
+          </SimpleGrid>
+
+
+          <div>
+            <Textarea
+              label="Ingredients"
+              minRows={4}
+              {...register('ingredients', {
                 required: true,
               })}
             />
@@ -97,124 +182,30 @@ export default function CreateRecipePage() {
               as="p"
               className="error-message"
               errors={errors}
-              name="recipeName"
-              message="This is required."
-            />
-          </div>
-          <div className="col-md-6 col-sm-12">
-            <label>Author Name</label>
-            <input {...register('authorName')} />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-8 col-sm-12">
-            <label>URL</label>
-            <input {...register('url')} />
-          </div>
-          <div className="col-md-4 col-sm-12">
-            <label>Website</label>
-            <input {...register('website')} />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-8 col-sm-12">
-            <label>Image Link</label>
-            <input {...register('image')} />
-          </div>
-          <div className="col-md-4 col-sm-12">
-            <label>Tags</label>
-            <Controller
-              render={({ field }) => (
-                <MultiTextInput tags={recipe?.tags || []} {...field} />
-              )}
-              name="tags"
-              defaultValue={[]}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-4 col-sm-12">
-            <label>Servings</label>
-            <input
-              {...register('servings', {
-                required: true,
-              })}
-            />
-            <ErrorMessage
-              as="p"
-              className="error-message"
-              errors={errors}
-              name="servings"
+              name="ingredients"
               message="This is required"
             />
           </div>
-          <div className="col-md-4 col-sm-12">
-            <label>Active Time</label>
-            <Controller
-              render={({ field }) => (
-                <TimeDurationInput
-                  {...field}
-                  name="activeTimeMinutes"
-                  minutes={recipe?.activeTimeMinutes || 0}
-                />
-              )}
-              name="activeTimeMinutes"
-              defaultValue={recipe?.activeTimeMinutes || 0}
+          <div>
+            <Textarea label="Steps"
+                      minRows={4}
+              {...register('steps', {
+                required: true,
+              })}
+            />
+            <ErrorMessage
+              as="p"
+              className="error-message"
+              errors={errors}
+              name="steps"
+              message="This is required"
             />
           </div>
-          <div className="col-md-4 col-sm-12">
-            <label>Total Time</label>
-            <Controller
-              render={({ field }) => (
-                <TimeDurationInput
-                  {...field}
-                  name="activeTimeMinutes"
-                  minutes={recipe?.totalTimeMinutes || 0}
-                />
-              )}
-              name="totalTimeMinutes"
-              defaultValue={recipe?.totalTimeMinutes || 0}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label>Ingredients</label>
-          <textarea
-            {...register('ingredients', {
-              required: true,
-            })}
-          />
-          <ErrorMessage
-            as="p"
-            className="error-message"
-            errors={errors}
-            name="ingredients"
-            message="This is required"
-          />
-        </div>
-        <div>
-          <label>Steps</label>
-          <textarea
-            {...register('steps', {
-              required: true,
-            })}
-          />
-          <ErrorMessage
-            as="p"
-            className="error-message"
-            errors={errors}
-            name="steps"
-            message="This is required"
-          />
-        </div>
-        <div>
-          <label>Notes</label>
-          <textarea {...register('notes')} />
-        </div>
-        <Button type="submit" className="submit-button">
-          Save Recipe
-        </Button>
+          <Textarea label="Notes" minRows={4} {...register('notes')} />
+          <Button type="submit" className="submit-button">
+            Save Recipe
+          </Button>
+        </Stack>
       </form>
     </div>
   );
