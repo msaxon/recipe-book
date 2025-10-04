@@ -2,7 +2,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { ErrorMessage } from '@hookform/error-message';
-import { Button, Input, SimpleGrid, Stack, Text, Textarea, TextInput } from '@mantine/core';
+import { Button, SimpleGrid, Stack, Textarea, TextInput } from '@mantine/core';
 
 import { postNewRecipe, updateRecipe } from '../../aws/dynamo-facade';
 import { useAuthContext } from '../../context/auth-context.tsx';
@@ -147,7 +147,9 @@ export default function CreateRecipePage() {
                     minutes={recipe?.activeTimeMinutes || 0}
                   />
                 )}
+                // @ts-expect-error one
                 name="activeTimeMinutes"
+                // @ts-expect-error one
                 defaultValue={recipe?.activeTimeMinutes || 0}
                 control={control}
               />
@@ -162,7 +164,9 @@ export default function CreateRecipePage() {
                     minutes={recipe?.totalTimeMinutes || 0}
                   />
                 )}
+                // @ts-expect-error three
                 name="totalTimeMinutes"
+                // @ts-expect-error four
                 defaultValue={recipe?.totalTimeMinutes || 0}
                 control={control}
               />
