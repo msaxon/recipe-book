@@ -3,7 +3,7 @@ import { type ChangeEvent, useState } from 'react';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 
-import { Button, Popover, Text, TextInput } from '@mantine/core';
+import { Button, Flex, Popover, Text, TextInput } from '@mantine/core';
 import Fraction from 'fraction.js';
 
 import {
@@ -149,7 +149,9 @@ export default function RecipeDetailPage(props: IProps) {
             {props.recipe.origin.website}
           </a>
         </p>
-        <div>
+        <Flex direction="row"
+              wrap="wrap" gap="12" justify="center"
+              align="center">
           {editButton}
           <Popover>
             <Popover.Target>
@@ -157,7 +159,7 @@ export default function RecipeDetailPage(props: IProps) {
                 content="Share"
                 color="yellow"
                 onClick={copyToClipboard}
-              />
+              >Share</Button>
             </Popover.Target>
             <Popover.Dropdown>
               <Text>URL Copied</Text>
@@ -165,7 +167,7 @@ export default function RecipeDetailPage(props: IProps) {
           </Popover>
           {libraryButton}
           {deleteButton}
-        </div>
+        </Flex>
         <img src={props.recipe.image} alt="" />
         <div className="recipe-detail-meta row">
           <div className="col-1-4">
