@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { useQuery } from 'react-query';
 
-import { InputLabel, Select, TextInput } from '@mantine/core';
+import { Grid, InputLabel, Select, TextInput } from '@mantine/core';
 import FeatherIcon from 'feather-icons-react';
 
 import { getAllUserRecipes } from '../../aws/dynamo-facade';
@@ -115,16 +115,17 @@ export default function RecipeBookContainer() {
   if (recipeBookViewMode === 'minimal') {
     return (
       <div>
-        <div className="row filter-section">
-          <div className="col-12 col-lg-3">
-            <TextInput
-              leftSection={<FeatherIcon icon="search" />}
-              label="Search"
-              // placeholder="Search..."
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="col-12 col-lg-4">
+
+          <Grid>
+            <Grid.Col span={{ base: 12, lg: 3 }}>
+              <TextInput
+                leftSection={<FeatherIcon icon="search" />}
+                label="Search"
+                // placeholder="Search..."
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, lg: 3 }}>
             <Select
               placeholder="Sort By"
               data={sortOptions.map((so) => ({
@@ -133,42 +134,43 @@ export default function RecipeBookContainer() {
               }))}
               onChange={(_, d) => setSort(d.value as string)}
             />
-          </div>
-          <div className="col-12 col-lg-4">
-            {/* @ts-expect-error its right i promise */}
-            <MultiTextInput onChange={setTags} />
-          </div>
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, lg: 3 }}>
+              {/* @ts-expect-error its right i promise */}
+              <MultiTextInput onChange={setTags} />
+            </Grid.Col>
           {userIdFromQueryString ? <p>Viewing Someone Else's Recipes</p> : null}
-        </div>
+          </Grid>
         <RecipeBookMinimal recipes={sortRecipes(recipes)} />
       </div>
     );
   } else {
     return (
       <div>
-        <div className="row filter-section">
-          <div className="col-12 col-lg-4">
+        <Grid px="8">
+          <Grid.Col span={{ base: 12, lg: 3 }}>
             <TextInput
               leftSection={<FeatherIcon icon="search" />}
               placeholder="Search..."
               label="Search"
               onChange={(e) => setSearch(e.target.value)}
             />
-          </div>
-          <div className="col-12 col-lg-3">
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, lg: 3 }}>
             <Select
               placeholder="Sort By"
               data={sortOptions}
               label="Sort By"
               onChange={(_, d) => setSort(d.value as string)}
             />
-          </div>
-          <div className="col-12 col-lg-4">
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, lg: 3 }}>
             <InputLabel>Tags</InputLabel>
             {/* @ts-expect-error its the right type i promise */}
             <MultiTextInput onChange={setTags} />
-          </div>
-        </div>
+          </Grid.Col>
+        </Grid>
+
         <div>
           {userIdFromQueryString ? <p>Viewing Someone Else's Recipes</p> : null}
         </div>
