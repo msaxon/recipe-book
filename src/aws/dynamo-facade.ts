@@ -109,7 +109,8 @@ export const putNewRecipeRelationship = async (
 ) => {
   //get the user
   const recipeIdsResponse = await getRecipeIdsByUser(userId, accessToken);
-  const recipeIds: Set<string> = recipeIdsResponse.Items?.[0]?.recipeId;
+  const recipeIds: Set<string> =
+    recipeIdsResponse.Items?.[0]?.recipeId ?? new Set();
   recipeIds.add(recipeId);
 
   //post the user
