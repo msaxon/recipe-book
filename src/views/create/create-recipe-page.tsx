@@ -2,7 +2,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { ErrorMessage } from '@hookform/error-message';
-import { Button, SimpleGrid, Stack, Textarea, TextInput } from '@mantine/core';
+import { Button, SimpleGrid, Stack, TextInput, Textarea } from '@mantine/core';
 
 import { postNewRecipe, updateRecipe } from '../../aws/dynamo-facade';
 import { useAuthContext } from '../../context/auth-context.tsx';
@@ -39,7 +39,7 @@ export default function CreateRecipePage() {
     handleSubmit,
     register,
     formState: { errors },
-    control
+    control,
   } = useForm({
     defaultValues,
   });
@@ -108,7 +108,6 @@ export default function CreateRecipePage() {
           <SimpleGrid cols={{ base: 1, md: 2 }}>
             <TextInput label="URL" {...register('url')} />
             <TextInput label="website" {...register('website')} />
-
             <TextInput label="Image Link" {...register('image')} />
             <div>
               <label>Tags</label>
@@ -124,7 +123,8 @@ export default function CreateRecipePage() {
           </SimpleGrid>
           <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
             <div>
-              <TextInput label="Servings"
+              <TextInput
+                label="Servings"
                 {...register('servings', {
                   required: true,
                 })}
@@ -173,10 +173,10 @@ export default function CreateRecipePage() {
             </div>
           </SimpleGrid>
 
-
           <div>
             <Textarea
               label="Ingredients"
+              autosize
               minRows={4}
               {...register('ingredients', {
                 required: true,
@@ -191,8 +191,10 @@ export default function CreateRecipePage() {
             />
           </div>
           <div>
-            <Textarea label="Steps"
-                      minRows={4}
+            <Textarea
+              label="Steps"
+              autosize
+              minRows={4}
               {...register('steps', {
                 required: true,
               })}
@@ -205,7 +207,7 @@ export default function CreateRecipePage() {
               message="This is required"
             />
           </div>
-          <Textarea label="Notes" minRows={4} {...register('notes')} />
+          <Textarea label="Notes" minRows={4} autosize {...register('notes')} />
           <Button type="submit" className="submit-button">
             Save Recipe
           </Button>

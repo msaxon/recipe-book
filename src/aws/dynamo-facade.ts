@@ -86,7 +86,7 @@ export const deleteRecipeRelationship = async (
   accessToken: string
 ): Promise<void> => {
   const recipeIdsResponse = await getRecipeIdsByUser(userId, accessToken);
-  let recipeIds = recipeIdsResponse.Items?.[0] as string[];
+  let recipeIds: string[] = Array.from(recipeIdsResponse.Items?.[0]?.recipeId);
   recipeIds = recipeIds.filter((id) => id !== recipe.recipeId);
 
   //update recipeIds
@@ -102,15 +102,6 @@ export const deleteRecipe = async (
   await deleteRecipeActual(recipe.recipeId, accessToken);
 };
 
-//TODO unused??
-export const getAllUserRecipeIds = async (
-  userId: string,
-  accessToken: string
-): Promise<string[]> => {
-  const recipeIdResponse = await getRecipeIdsByUser(userId, accessToken);
-  return recipeIdResponse.Items?.[0] as string[];
-};
-
 export const putNewRecipeRelationship = async (
   userId: string,
   recipeId: string,
@@ -118,12 +109,11 @@ export const putNewRecipeRelationship = async (
 ) => {
   //get the user
   const recipeIdsResponse = await getRecipeIdsByUser(userId, accessToken);
-  const recipeIds = recipeIdsResponse.Items?.[0] as string[];
-
-  recipeIds.push(recipeId);
+  const recipeIds: Set<string> = recipeIdsResponse.Items?.[0]?.recipeId;
+  recipeIds.add(recipeId);
 
   //post the user
-  await postRecipeUserRelationship(recipeIds, userId, accessToken);
+  await postRecipeUserRelationship(Array.from(recipeIds), userId, accessToken);
 };
 
 export const getAllUsers = async (accessToken: string): Promise<User[]> => {

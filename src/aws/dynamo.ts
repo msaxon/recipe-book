@@ -14,7 +14,6 @@ import {
   ScanCommand,
   type ScanCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
-import { marshall } from '@aws-sdk/util-dynamodb';
 
 import type { Recipe } from '../models/interfaces';
 
@@ -121,7 +120,7 @@ export const postRecipe = async (
   const db = await setupAuth(accessToken);
   const putRecipeParams = {
     TableName: 'recipeBook-recipe',
-    Item: marshall(recipe),
+    Item: recipe,
   };
 
   return db.send(new PutCommand(putRecipeParams));
