@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { useQuery } from 'react-query';
 
-import { Grid, InputLabel, Select, TextInput } from '@mantine/core';
+import { Container, Grid, InputLabel, Select, TextInput } from '@mantine/core';
 import FeatherIcon from 'feather-icons-react';
 
 import { getAllUserRecipes } from '../../aws/dynamo-facade';
@@ -43,7 +43,10 @@ export default function RecipeBookContainer() {
     setShowLoading(isLoading);
   }, [isLoading]);
 
-  const sortRecipes = (recipes: Recipe[]) => {
+  console.log('all', tags);
+
+  const sortRecipes = (recipes: Recipe[], tags: string[]) => {
+    console.log('sorting recipes', tags);
     const lowerSearch = search.toLowerCase();
 
     const filteredRecipes = recipes.filter((recipe) => {
@@ -115,17 +118,16 @@ export default function RecipeBookContainer() {
   if (recipeBookViewMode === 'minimal') {
     return (
       <div>
-
-          <Grid>
-            <Grid.Col span={{ base: 12, lg: 3 }}>
-              <TextInput
-                leftSection={<FeatherIcon icon="search" />}
-                label="Search"
-                // placeholder="Search..."
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </Grid.Col>
-            <Grid.Col span={{ base: 12, lg: 3 }}>
+        <Grid>
+          <Grid.Col span={{ base: 12, lg: 4 }}>
+            <TextInput
+              leftSection={<FeatherIcon icon="search" />}
+              label="Search"
+              // placeholder="Search..."
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, lg: 4 }}>
             <Select
               placeholder="Sort By"
               data={sortOptions.map((so) => ({
@@ -134,21 +136,21 @@ export default function RecipeBookContainer() {
               }))}
               onChange={(_, d) => setSort(d.value as string)}
             />
-            </Grid.Col>
-            <Grid.Col span={{ base: 12, lg: 3 }}>
-              {/* @ts-expect-error its right i promise */}
-              <MultiTextInput onChange={setTags} />
-            </Grid.Col>
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, lg: 4 }}>
+            {/* @ts-expect-error its right i promise */}
+            <MultiTextInput onChange={setTags} />
+          </Grid.Col>
           {userIdFromQueryString ? <p>Viewing Someone Else's Recipes</p> : null}
-          </Grid>
-        <RecipeBookMinimal recipes={sortRecipes(recipes)} />
+        </Grid>
+        <RecipeBookMinimal recipes={sortRecipes(recipes, tags)} />
       </div>
     );
   } else {
     return (
-      <div>
+      <Container fluid>
         <Grid px="8">
-          <Grid.Col span={{ base: 12, lg: 3 }}>
+          <Grid.Col span={{ base: 12, md: 4 }}>
             <TextInput
               leftSection={<FeatherIcon icon="search" />}
               placeholder="Search..."
@@ -156,7 +158,7 @@ export default function RecipeBookContainer() {
               onChange={(e) => setSearch(e.target.value)}
             />
           </Grid.Col>
-          <Grid.Col span={{ base: 12, lg: 3 }}>
+          <Grid.Col span={{ base: 12, md: 4 }}>
             <Select
               placeholder="Sort By"
               data={sortOptions}
@@ -164,7 +166,7 @@ export default function RecipeBookContainer() {
               onChange={(_, d) => setSort(d.value as string)}
             />
           </Grid.Col>
-          <Grid.Col span={{ base: 12, lg: 3 }}>
+          <Grid.Col span={{ base: 12, md: 4 }}>
             <InputLabel>Tags</InputLabel>
             {/* @ts-expect-error its the right type i promise */}
             <MultiTextInput onChange={setTags} />
@@ -174,8 +176,8 @@ export default function RecipeBookContainer() {
         <div>
           {userIdFromQueryString ? <p>Viewing Someone Else's Recipes</p> : null}
         </div>
-        <RecipeBookPage userRecipes={sortRecipes(recipes)} />
-      </div>
+        <RecipeBookPage userRecipes={sortRecipes(recipes, tags)} />
+      </Container>
     );
   }
 }

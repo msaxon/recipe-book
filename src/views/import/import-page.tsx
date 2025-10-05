@@ -45,7 +45,9 @@ export default function ImportPage() {
         placeholder="https://www.seriouseats.com/recipes/2020/07/lamb-biryani.html"
         onChange={(e) => setUrl(e.target.value)}
       />
-      <Button content="Import" onClick={handleImportRecipe}>Import</Button>
+      <Button content="Import" onClick={handleImportRecipe}>
+        Import
+      </Button>
       {importErrorContainer}
       <div className="supported-sites">
         <h2>Supported Sites</h2>

@@ -1,4 +1,4 @@
-import React, { type Dispatch, type SetStateAction, useState } from 'react';
+import React, { type Dispatch, type SetStateAction } from 'react';
 
 import { TagsInput } from '@mantine/core';
 import { uniq } from 'underscore';
@@ -15,22 +15,15 @@ interface IProps {
 }
 
 export default function MultiTextInput(props: IProps) {
-  // const [addedTags, setAddedTags] = useState<string[]>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>(
-    props.tags ? props.tags : []
-  );
-  // const { onChange } = props;
-  // TODO onchange
-
-  const options: string[] = uniq(TAGS.concat(selectedTags));
+  const options: string[] = uniq(TAGS.concat(props.tags ?? []));
 
   return (
     <div>
       <TagsInput
         name={props.name}
         data={options}
-        value={selectedTags}
-        onChange={setSelectedTags}
+        value={props.tags}
+        onChange={props.onChange}
       />
     </div>
   );
