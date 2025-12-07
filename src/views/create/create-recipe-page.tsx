@@ -6,6 +6,7 @@ import { Button, SimpleGrid, Stack, TextInput, Textarea } from '@mantine/core';
 
 import { postNewRecipe, updateRecipe } from '../../aws/dynamo-facade';
 import { useAuthContext } from '../../context/auth-context.tsx';
+import { usePageTitle } from '../../hooks/usePageTitle.ts';
 import { useDispatch, useStore } from '../../hooks/useStore';
 import type { Origin, Recipe } from '../../models/interfaces';
 import { setImportedRecipe } from '../../state/actions';
@@ -16,6 +17,7 @@ import './create-recipe.scss';
 
 export default function CreateRecipePage() {
   const { importedRecipe: recipe } = useStore();
+  usePageTitle('New Recipe');
   const { googleId, googleAuth } = useAuthContext();
   const defaultValues = recipe
     ? {

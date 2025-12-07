@@ -6,6 +6,7 @@ import { Button, Card, Text } from '@mantine/core';
 import { getAllUsers } from '../../aws/dynamo-facade';
 import { useAuthContext } from '../../context/auth-context.tsx';
 import { getRandomPhrase } from '../../data/fun-phrases';
+import { usePageTitle } from '../../hooks/usePageTitle.ts';
 import { GET_ALL_USERS } from '../../utils/constants';
 import AsyncLoader from '../shared/interstitial/async-loader';
 
@@ -13,6 +14,7 @@ import './community.scss';
 
 export default function Community() {
   const { googleAuth } = useAuthContext();
+  usePageTitle('Community');
 
   const {
     data: users,

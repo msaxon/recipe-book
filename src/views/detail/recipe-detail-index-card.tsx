@@ -1,3 +1,4 @@
+import { usePageTitle } from '../../hooks/usePageTitle.ts';
 import type { Recipe } from '../../models/interfaces';
 import { convertMarkdownToHtml } from '../../utils/markdown-utils';
 import RecipeViewModeToggle from './recipe-view-mode-toggle';
@@ -9,6 +10,7 @@ interface IProps {
 }
 
 export default function RecipeDetailIndexCard({ recipe }: IProps) {
+  usePageTitle(recipe.recipeName);
   return (
     <div>
       <RecipeViewModeToggle />

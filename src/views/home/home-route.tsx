@@ -1,8 +1,10 @@
+import { usePageTitle } from '../../hooks/usePageTitle.ts';
 import { GoogleSignOn } from '../shared/auth/google-sign-on';
 
 import './home-route.scss';
 
 export function Home() {
+  usePageTitle('Home');
   return (
     <div className="home-container">
       <GoogleSignOn />

@@ -8,6 +8,7 @@ import FeatherIcon from 'feather-icons-react';
 import { getAllUserRecipes } from '../../aws/dynamo-facade';
 import { useAuthContext } from '../../context/auth-context.tsx';
 import { useRecipeContext } from '../../context/recipe-context.tsx';
+import { usePageTitle } from '../../hooks/usePageTitle.ts';
 import useSearchQuery from '../../hooks/useSearchQuery';
 import type { Recipe } from '../../models/interfaces';
 import { firstContainsAllOfSecond } from '../../utils/array-utils';
@@ -26,6 +27,7 @@ export default function RecipeBookContainer() {
   let { googleId: userId, googleAuth } = useAuthContext();
   const { recipeBookViewMode, setShowLoading } = useRecipeContext();
   const userIdFromQueryString = useSearchQuery().get('userId');
+  usePageTitle('Recipes');
 
   if (userIdFromQueryString) {
     userId = userIdFromQueryString;

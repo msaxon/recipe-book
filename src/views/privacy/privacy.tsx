@@ -1,6 +1,9 @@
+import { usePageTitle } from '../../hooks/usePageTitle.ts';
+
 import './privacy.scss';
 
 export function Privacy() {
+  usePageTitle('Privacy');
   return (
     <div className="privacy-wrapper">
       <h1>Privacy Policy</h1>

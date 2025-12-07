@@ -12,6 +12,7 @@ import {
   putNewRecipeRelationship,
 } from '../../aws/dynamo-facade';
 import { useAuthContext } from '../../context/auth-context.tsx';
+import { usePageTitle } from '../../hooks/usePageTitle.ts';
 import { useDispatch } from '../../hooks/useStore';
 import type { Recipe } from '../../models/interfaces';
 import { setImportedRecipe } from '../../state/actions';
@@ -33,6 +34,7 @@ export default function RecipeDetailPage(props: IProps) {
   const { googleAuth, googleId } = useAuthContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  usePageTitle(props.recipe.recipeName);
 
   let recipeIngredients = props.recipe.ingredients;
 
@@ -149,17 +151,19 @@ export default function RecipeDetailPage(props: IProps) {
             {props.recipe.origin.website}
           </a>
         </p>
-        <Flex direction="row"
-              wrap="wrap" gap="12" justify="center"
-              align="center">
+        <Flex
+          direction="row"
+          wrap="wrap"
+          gap="12"
+          justify="center"
+          align="center"
+        >
           {editButton}
           <Popover>
             <Popover.Target>
-              <Button
-                content="Share"
-                color="yellow"
-                onClick={copyToClipboard}
-              >Share</Button>
+              <Button content="Share" color="yellow" onClick={copyToClipboard}>
+                Share
+              </Button>
             </Popover.Target>
             <Popover.Dropdown>
               <Text>URL Copied</Text>

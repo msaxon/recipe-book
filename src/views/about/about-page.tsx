@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 
+import { usePageTitle } from '../../hooks/usePageTitle.ts';
+
 export default function AboutPage() {
+  usePageTitle('About');
   return (
     <div>
       <h2>Basic Idea</h2>

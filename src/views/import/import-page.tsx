@@ -8,6 +8,7 @@ import { importRecipe } from '../../aws/importer';
 import { useAuthContext } from '../../context/auth-context.tsx';
 import { useRecipeContext } from '../../context/recipe-context.tsx';
 import { supportedSites } from '../../data/supported-websites';
+import { usePageTitle } from '../../hooks/usePageTitle.ts';
 import { useDispatch } from '../../hooks/useStore';
 import { setImportedRecipe } from '../../state/actions';
 
@@ -16,6 +17,7 @@ import './import-page.scss';
 export default function ImportPage() {
   const [url, setUrl] = useState('');
   const [importError, setImportError] = useState(null);
+  usePageTitle('Import Recipe');
 
   const { googleAuth } = useAuthContext();
   const { setShowLoading } = useRecipeContext();
