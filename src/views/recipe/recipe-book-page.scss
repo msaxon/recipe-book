@@ -4,6 +4,13 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.recipe-book-card {
+  width: 400px;
+  max-width: 100%;
 }
 
 .ui.card,

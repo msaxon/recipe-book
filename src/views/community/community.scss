@@ -4,4 +4,11 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
+  gap: 1.5rem;
+  padding: 1rem 0;
+
+  .mantine-Card-root {
+    width: 300px;
+    max-width: 100%;
+  }
 }

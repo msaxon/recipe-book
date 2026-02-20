@@ -34,14 +34,14 @@ export default function Community() {
         <div className="user-cards">
           {users.map((user) => {
             return (
-              <Card key={user.userId}>
-                <Card.Section>
-                  <Text>{user.username}</Text>
-                  <Text size="sm">{getRandomPhrase()}</Text>
+              <Card key={user.userId} shadow="sm" padding="lg" radius="md" withBorder>
+                <Card.Section withBorder inheritPadding py="xs">
+                  <Text fw={500}>{user.username}</Text>
+                  <Text size="sm" c="dimmed">{getRandomPhrase()}</Text>
                 </Card.Section>
-                <Card.Section>
+                <Card.Section inheritPadding py="xs">
                   <Link to={'/recipes?userId=' + user.userId}>
-                    <Button color="green">See Recipes</Button>
+                    <Button color="green" fullWidth>See Recipes</Button>
                   </Link>
                 </Card.Section>
               </Card>

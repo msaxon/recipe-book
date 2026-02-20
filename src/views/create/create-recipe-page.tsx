@@ -114,9 +114,7 @@ export default function CreateRecipePage() {
             <div>
               <label>Tags</label>
               <Controller
-                render={({ field }) => (
-                  <MultiTextInput tags={recipe?.tags || []} {...field} />
-                )}
+                render={({ field }) => <MultiTextInput {...field} />}
                 name="tags"
                 defaultValue={[]}
                 control={control}

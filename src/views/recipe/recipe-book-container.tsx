@@ -20,7 +20,7 @@ import RecipeBookPage from './recipe-book-page';
 import './recipe-book-page.scss';
 
 export default function RecipeBookContainer() {
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('recipeName_asc');
   // eslint-disable-next-line prefer-const
@@ -140,8 +140,7 @@ export default function RecipeBookContainer() {
             />
           </Grid.Col>
           <Grid.Col span={{ base: 12, lg: 4 }}>
-            {/* @ts-expect-error its right i promise */}
-            <MultiTextInput onChange={setTags} />
+            <MultiTextInput value={tags} onChange={setTags} />
           </Grid.Col>
           {userIdFromQueryString ? <p>Viewing Someone Else's Recipes</p> : null}
         </Grid>
@@ -170,8 +169,7 @@ export default function RecipeBookContainer() {
           </Grid.Col>
           <Grid.Col span={{ base: 12, md: 4 }}>
             <InputLabel>Tags</InputLabel>
-            {/* @ts-expect-error its the right type i promise */}
-            <MultiTextInput onChange={setTags} />
+            <MultiTextInput value={tags} onChange={setTags} />
           </Grid.Col>
         </Grid>
 

@@ -10,6 +10,7 @@ import { AuthProvider } from './context/auth-context.tsx';
 import { RecipeContextProvider } from './context/recipe-context.tsx';
 import { queryClient } from './state/query-client.ts';
 import AboutPage from './views/about/about-page.tsx';
+import Community from './views/community/community.tsx';
 import Contact from './views/contact/contact.tsx';
 import CreateRecipePage from './views/create/create-recipe-page.tsx';
 import RecipeDetailPageContainer from './views/detail/recipe-detail-page-container.tsx';
@@ -23,9 +24,6 @@ import { HeaderMenu } from './views/shared/menu/header-menu.tsx';
 
 import './App.scss';
 
-function CommunityPage() {
-  return null;
-}
 
 function App() {
   const [showLoading, setShowLoading] = useState<boolean>(false);
@@ -81,7 +79,7 @@ function App() {
           path="/recipes/community"
           element={
             <ProtectedRoute>
-              <CommunityPage />
+              <Community />
             </ProtectedRoute>
           }
         />

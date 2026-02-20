@@ -18,8 +18,8 @@ export const getAllUserRecipes = async (
 ): Promise<Recipe[]> => {
   //get recipeIds
   const recipeIdResponse = await getRecipeIdsByUser(userId, accessToken);
-  const recipeIds = recipeIdResponse.Items?.[0].recipeId as Set<string>;
-  const recipeIdArrays = splitArrayIntoChunks(Array.from(recipeIds), 100);
+  const recipeIds = recipeIdResponse.Items?.[0].recipeId as string[];
+  const recipeIdArrays = splitArrayIntoChunks([...recipeIds], 100);
 
   //get lists
   let recipes: Recipe[] = [];
@@ -86,7 +86,7 @@ export const deleteRecipeRelationship = async (
   accessToken: string
 ): Promise<void> => {
   const recipeIdsResponse = await getRecipeIdsByUser(userId, accessToken);
-  let recipeIds: string[] = Array.from(recipeIdsResponse.Items?.[0]?.recipeId);
+  let recipeIds: string[] = recipeIdsResponse.Items?.[0]?.recipeId || [];
   recipeIds = recipeIds.filter((id) => id !== recipe.recipeId);
 
   //update recipeIds
@@ -109,13 +109,11 @@ export const putNewRecipeRelationship = async (
 ) => {
   //get the user
   const recipeIdsResponse = await getRecipeIdsByUser(userId, accessToken);
-  const recipeIds: string[] = Array.from(
-    recipeIdsResponse.Items?.[0]?.recipeId
-  );
+  const recipeIds: string[] = recipeIdsResponse.Items?.[0]?.recipeId || [];
   recipeIds.push(recipeId);
 
   //post the user
-  await postRecipeUserRelationship(Array.from(recipeIds), userId, accessToken);
+  await postRecipeUserRelationship([...recipeIds], userId, accessToken);
 };
 
 export const getAllUsers = async (accessToken: string): Promise<User[]> => {

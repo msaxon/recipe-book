@@ -1,4 +1,4 @@
-import React, { type Dispatch, type SetStateAction } from 'react';
+import React from 'react';
 
 import { TagsInput } from '@mantine/core';
 import { uniq } from 'underscore';
@@ -8,21 +8,21 @@ import { TAGS } from '../../../models/tags';
 import '../../create/create-recipe.scss';
 
 interface IProps {
-  tags: string[];
-  name: string;
-  onChange: Dispatch<SetStateAction<any>>;
-  ref: React.Ref<any>;
+  value?: string[];
+  name?: string;
+  onChange: (value: string[]) => void;
+  ref?: React.Ref<any>;
 }
 
 export default function MultiTextInput(props: IProps) {
-  const options: string[] = uniq(TAGS.concat(props.tags ?? []));
+  const options: string[] = uniq(TAGS.concat(props.value ?? []));
 
   return (
     <div>
       <TagsInput
         name={props.name}
         data={options}
-        value={props.tags}
+        value={props.value || []}
         onChange={props.onChange}
       />
     </div>

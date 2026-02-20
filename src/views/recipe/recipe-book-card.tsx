@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { Card, Container, Image, Text } from '@mantine/core';
+import { Card, Image, Text } from '@mantine/core';
 
 import type { Recipe } from '../../models/interfaces';
 
@@ -24,13 +24,8 @@ export default function RecipeBookCard({ recipe }: IProps) {
       shadow="sm"
       padding="lg"
       radius="md"
-      withBorder={true}
-      styles={{
-        root: {
-          margin: '1em',
-          width: 400,
-        },
-      }}
+      withBorder
+      className="recipe-book-card"
     >
       <Card.Section>
         <Link to={'/recipes/details?recipeId=' + recipe.recipeId}>
@@ -47,12 +42,16 @@ export default function RecipeBookCard({ recipe }: IProps) {
         </Link>
       </Card.Section>
 
-      <Card.Section>
-        <Container px={16} pb={8}>
-          <Text>{recipe.recipeName}</Text>
-          <Text size="xs">{recipe.origin.website}</Text>
-          <Text size="sm">{formatTags()}</Text>
-        </Container>
+      <Card.Section inheritPadding py="xs">
+        <Link to={'/recipes/details?recipeId=' + recipe.recipeId}>
+          <Text fw={500}>{recipe.recipeName}</Text>
+        </Link>
+        <Text size="xs" c="dimmed">
+          {recipe.origin.website}
+        </Text>
+        <Text size="sm" mt="xs">
+          {formatTags()}
+        </Text>
       </Card.Section>
     </Card>
   );
