@@ -12,6 +12,7 @@ export function GoogleSignOn() {
   const [noSession, setNoSession] = useState<boolean>(false);
 
   useGoogleOneTapLogin({
+    disabled: isSignedIn,
     auto_select: true,
     onSuccess: (response) => {
       console.log('success', response);
@@ -23,7 +24,11 @@ export function GoogleSignOn() {
     promptMomentNotification: (notification) => {
       console.log('One Tap prompt status:', notification);
 
-      if (notification.getNotDisplayedReason() === 'opt_out_or_no_session') {
+      if (
+        notification.isNotDisplayed() ||
+        notification.isSkippedMoment() ||
+        notification.isDismissedMoment()
+      ) {
         setNoSession(true);
       }
     },

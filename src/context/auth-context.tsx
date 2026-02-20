@@ -23,6 +23,7 @@ interface AuthProps {
   isSignedIn: boolean;
   redirectUrl: string | undefined;
   signIn: (res: CredentialResponse) => void;
+  signOut: () => void;
   setRedirectUrl: (url: string | undefined) => void;
 }
 
@@ -32,14 +33,15 @@ export const AuthContext = createContext<AuthProps>({
   isSignedIn: false,
   redirectUrl: undefined,
   signIn: () => {},
+  signOut: () => {},
   setRedirectUrl: () => {},
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [googleId, setGoogleId] = useState('');
-  const [googleAuth, setGoogleAuth] = useState('');
+  const [googleId, setGoogleId] = useState(localStorage.getItem('googleId') || '');
+  const [googleAuth, setGoogleAuth] = useState(localStorage.getItem('googleAuth') || '');
   const [isSignedIn, setIsSignedIn] = useState<boolean>(
-    !!googleAuth && !!googleId
+    !!(localStorage.getItem('googleAuth') || googleAuth) && !!(localStorage.getItem('googleId') || googleId)
   );
   const [redirectUrl, setRedirectUrl] = useState<string | undefined>(undefined);
 
@@ -53,6 +55,17 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     setGoogleId(decodedToken.sub);
     setGoogleAuth(res.credential);
     setIsSignedIn(true);
+
+    localStorage.setItem('googleId', decodedToken.sub);
+    localStorage.setItem('googleAuth', res.credential);
+  };
+
+  const onLogout = () => {
+    setGoogleId('');
+    setGoogleAuth('');
+    setIsSignedIn(false);
+    localStorage.removeItem('googleId');
+    localStorage.removeItem('googleAuth');
   };
 
   const onFailure = () => {
@@ -68,6 +81,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         isSignedIn,
         redirectUrl,
         signIn: onSuccess,
+        signOut: onLogout,
         setRedirectUrl,
       }}
     >

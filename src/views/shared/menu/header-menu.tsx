@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react';
 
 import { Link } from 'react-router-dom';
 
-import { Menu } from '@mantine/core';
+import { Menu, Button } from '@mantine/core';
 import FeatherIcon from 'feather-icons-react';
+
+import { useAuthContext } from '../../../context/auth-context.tsx';
 
 import './header-menu.scss';
 
 export function HeaderMenu() {
   const [pageWidth, setPageWidth] = useState<number>(window.innerWidth);
+  const { isSignedIn, signOut } = useAuthContext();
 
   useEffect(() => {
     const resizeListener = () => {
@@ -26,6 +29,11 @@ export function HeaderMenu() {
       <Link to="/recipes/import">Import Recipe</Link>
       <Link to="/recipes/create">Create a Recipe</Link>
       <Link to="/recipes/community">Community Recipes</Link>
+      {isSignedIn && (
+        <Button variant="subtle" color="red" onClick={signOut}>
+          Logout
+        </Button>
+      )}
     </div>
   );
 
@@ -49,6 +57,11 @@ export function HeaderMenu() {
             <Menu.Item>
               <Link to="/recipes/community">Community Recipes</Link>
             </Menu.Item>
+            {isSignedIn && (
+              <Menu.Item color="red" onClick={signOut}>
+                Logout
+              </Menu.Item>
+            )}
           </Menu.Dropdown>
         </Menu>
         {/*<Dropdown item floating pointing="right" icon="bars">*/}
