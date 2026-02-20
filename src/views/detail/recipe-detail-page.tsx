@@ -18,6 +18,7 @@ import type { Recipe } from '../../models/interfaces';
 import { setImportedRecipe } from '../../state/actions';
 import { convertMarkdownToHtml } from '../../utils/markdown-utils';
 import { minutesToTime } from '../../utils/time-utils';
+import { OptimizedImage } from '../shared/image/optimized-image.tsx';
 import RecipeViewModeToggle from './recipe-view-mode-toggle';
 
 import './recipe-detail.scss';
@@ -172,7 +173,11 @@ export default function RecipeDetailPage(props: IProps) {
           {libraryButton}
           {deleteButton}
         </Flex>
-        <img src={props.recipe.image} alt="" />
+        <OptimizedImage
+          src={props.recipe.image}
+          alt={props.recipe.recipeName}
+          priority
+        />
         <div className="recipe-detail-meta row">
           <div className="col-1-4">
             <p>

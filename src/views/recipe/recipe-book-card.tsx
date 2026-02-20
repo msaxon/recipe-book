@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
 
-import { Card, Image, Text } from '@mantine/core';
+import { Card, Text } from '@mantine/core';
 
 import type { Recipe } from '../../models/interfaces';
+import { OptimizedImage } from '../shared/image/optimized-image.tsx';
 
 import './recipe-book-page.scss';
 
@@ -29,16 +30,13 @@ export default function RecipeBookCard({ recipe }: IProps) {
     >
       <Card.Section>
         <Link to={'/recipes/details?recipeId=' + recipe.recipeId}>
-          {
-            <Image
-              src={recipe.image ?? 'https://freesvg.org/img/ftkrecipes.png'}
-              width="100%"
-              height="250px"
-              alt=""
-              className="recipe-card-img"
-              loading="lazy"
-            />
-          }
+          <OptimizedImage
+            src={recipe.image}
+            w="100%"
+            h="250px"
+            alt={recipe.recipeName}
+            className="recipe-card-img"
+          />
         </Link>
       </Card.Section>
 
