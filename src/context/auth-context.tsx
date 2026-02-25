@@ -2,6 +2,7 @@ import {
   type PropsWithChildren,
   createContext,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 
@@ -15,6 +16,7 @@ import { clientId } from '../utils/constants.ts';
 
 interface GoogleJwtPayload {
   sub: string; // Google user ID
+  exp: number; // Expiration time
 }
 
 interface AuthProps {
@@ -37,12 +39,29 @@ export const AuthContext = createContext<AuthProps>({
   setRedirectUrl: () => {},
 });
 
+const getStoredAuth = () => {
+  const token = localStorage.getItem('googleAuth');
+  const id = localStorage.getItem('googleId');
+  if (token && id) {
+    try {
+      const decoded = jwtDecode<GoogleJwtPayload>(token);
+      // exp is in seconds, Date.now() is in ms
+      if (decoded.exp * 1000 > Date.now()) {
+        return { token, id, isSignedIn: true };
+      }
+    } catch (e) {
+      console.error('Invalid token', e);
+    }
+  }
+  return { token: '', id: '', isSignedIn: false };
+};
+
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [googleId, setGoogleId] = useState(localStorage.getItem('googleId') || '');
-  const [googleAuth, setGoogleAuth] = useState(localStorage.getItem('googleAuth') || '');
-  const [isSignedIn, setIsSignedIn] = useState<boolean>(
-    !!(localStorage.getItem('googleAuth') || googleAuth) && !!(localStorage.getItem('googleId') || googleId)
-  );
+  const [initialAuth] = useState(getStoredAuth);
+
+  const [googleId, setGoogleId] = useState(initialAuth.id);
+  const [googleAuth, setGoogleAuth] = useState(initialAuth.token);
+  const [isSignedIn, setIsSignedIn] = useState<boolean>(initialAuth.isSignedIn);
   const [redirectUrl, setRedirectUrl] = useState<string | undefined>(undefined);
 
   const onSuccess = (res: CredentialResponse) => {
@@ -72,6 +91,30 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     console.log('user is not logged in');
     setIsSignedIn(false);
   };
+
+  useEffect(() => {
+    if (isSignedIn && googleAuth) {
+      try {
+        const decodedToken = jwtDecode<GoogleJwtPayload>(googleAuth);
+        const currentTime = Date.now() / 1000;
+        if (decodedToken.exp < currentTime) {
+          console.log('Token expired, logging out');
+          setGoogleId('');
+          setGoogleAuth('');
+          setIsSignedIn(false);
+          localStorage.removeItem('googleId');
+          localStorage.removeItem('googleAuth');
+        }
+      } catch (error) {
+        console.error('Invalid token', error);
+        setGoogleId('');
+        setGoogleAuth('');
+        setIsSignedIn(false);
+        localStorage.removeItem('googleId');
+        localStorage.removeItem('googleAuth');
+      }
+    }
+  }, [isSignedIn, googleAuth]);
 
   return (
     <AuthContext.Provider
